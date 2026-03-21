@@ -98,7 +98,7 @@ allSubjects.forEach(sub => {
 });
 
 //finding topper by comparing totalMarks 
-const topper = processedStudents.reduce((prev, current) => 
+const topper = resStudents.reduce((prev, current) => 
     (prev.totalMarks > current.totalMarks) ? prev : current
 );
 
@@ -106,7 +106,7 @@ console.log(`\nClass Topper: ${topper.name} with ${topper.totalMarks} marks`);
 
 // design for the report format
 console.log("\n--- Individual Student Analysis ---");
-processedStudents.forEach(s => {
+resStudents.forEach(s => {
     console.log(`${s.name} Total Marks: ${s.totalMarks}`);
     console.log(`${s.name} Average: ${s.averageMarks.toFixed(1)}`); //toFixed(1) for clean decimal
     console.log(`${s.name} Grade: ${s.grade}`);
