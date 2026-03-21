@@ -44,3 +44,13 @@ const resStudents = students.map(student => {
     return { ...student, totalMarks, averageMarks };
 });
 
+
+//this function checks for 75% attendance and no subject score below 40
+function checkfailStudent(student) {
+    if (student.attendance < 75) return "Fail (Low Attendance)";
+    
+    const failscoreSubject = student.marks.find(m => m.score <= 40);
+    if (failscoreSubject) return `Fail (Failed in ${failscoreSubject.subject})`;
+    
+    return null; 
+}
