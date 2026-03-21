@@ -21,11 +21,12 @@ body {
 }
 
 
-header {  
+header {
     text-align: center;
     padding: 80px 20px;
     background: linear-gradient(180deg, #111827 0%, var(--page-basecolor) 100%);
 }
+
 /* dark gradient for for the headers background which is page basecolor*/
 header h1 {
     font-size: 3.5rem;
@@ -56,7 +57,8 @@ header img:hover {
 nav {
     background-color: rgba(30, 41, 59, 0.8);
     backdrop-filter: blur(8px);
-    position: sticky; /*sticky position for easy access to menu*/
+    position: sticky;
+    /*sticky position for easy access to menu*/
     top: 0;
     z-index: 50;
     border-bottom: 1px solid var(--dividing-lines);
@@ -80,6 +82,7 @@ nav a {
     letter-spacing: 1px;
     transition: 0.3s ease;
 }
+
 nav a:hover {
     /*when hovering over the nav section ie about me, skills, education, projects, contact*/
     color: var(--yellow-fontstuff);
@@ -131,11 +134,13 @@ h2 {
 table {
     width: 100%;
     border: #020617;
-    border-collapse: collapse; /*border collapsed is used to get rid of double border look*/
+    border-collapse: collapse;
+    /*border collapsed is used to get rid of double border look*/
     margin-top: 20px;
 }
 
-table th, table td {
+table th,
+table td {
     padding: 16px;
     border: 1px solid var(--dividing-lines);
     text-align: left;
@@ -145,6 +150,7 @@ table th {
     background-color: #020617;
     color: var(--yellow-fontstuff);
 }
+
 /*nth child selector added so that different years and degrees are easier to tell apart*/
 table tbody tr:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.02);
@@ -176,7 +182,6 @@ article a:hover {
     color: white;
 }
 
-
 form div {
     margin-bottom: 20px;
 }
@@ -189,7 +194,9 @@ label {
     font-size: 0.9rem;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     width: 100%;
     padding: 14px;
     background-color: var(--page-basecolor);
@@ -199,7 +206,8 @@ input, select, textarea {
     transition: border-color 0.3s;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
     outline: none;
     border-color: var(--yellow-fontstuff);
 }
@@ -211,7 +219,8 @@ button[type="submit"] {
     border: none;
     border-radius: 6px;
     font-weight: 700;
-    cursor: pointer; /*cursor made a pointer*/
+    cursor: pointer;
+    /*cursor made a pointer*/
     transition: 0.2s;
 }
 
@@ -229,7 +238,7 @@ input[type="radio"] {
 }
 
 /* to make the Male/Female text sit next to the radio dots */
-input[type="radio"] + label {
+input[type="radio"]+label {
     display: inline-block;
     width: auto;
     margin-right: 20px;
@@ -238,7 +247,7 @@ input[type="radio"] + label {
 }
 
 /* for the gender main label specifically */
-form div > label:first-child {
+form div>label:first-child {
     display: block;
     margin-bottom: 10px;
 }
@@ -256,15 +265,16 @@ footer a {
 }
 
 @media (max-width: 768px) {
+
     /*used flex direction: column to stack links vertically if used on mobile devices*/
     nav ul {
         flex-direction: column;
     }
-    
+
     header h1 {
         font-size: 2.2rem;
     }
-    
+
     section {
         margin: 20px;
         padding: 25px;
