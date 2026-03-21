@@ -80,10 +80,20 @@ nav a {
     letter-spacing: 1px;
     transition: 0.3s ease;
 }
+nav a:hover {
+    /*when hovering over the nav section ie about me, skills, education, projects, contact*/
+    color: var(--yellow-fontstuff);
+    background: rgba(251, 191, 36, 0.1);
+}
 
 nav ul li ul {
     display: none;
     position: absolute;
     background: var(--section-background);
     border: 1px solid var(--dividing-lines);
+}
+
+/*hover over the skills block which makes a block having tech and soft skills*/
+nav ul li:hover ul {
+    display: block;
 }
