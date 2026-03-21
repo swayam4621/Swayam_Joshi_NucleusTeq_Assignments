@@ -97,3 +97,18 @@ nav ul li ul {
 nav ul li:hover ul {
     display: block;
 }
+
+section {
+    max-width: 850px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: var(--section-background);
+    border-radius: 12px;
+    border: 1px solid var(--dividing-lines);
+}
+
+h2 {
+    margin-bottom: 30px;
+    font-size: 1.75rem;
+    color: var(--yellow-fontstuff);
+}
