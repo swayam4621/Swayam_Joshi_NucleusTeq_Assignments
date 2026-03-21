@@ -56,8 +56,8 @@ function checkfailStudent(student) {
 }
 
 //apply the 85/70/50 grading 
-processedStudents.forEach(student => {
-    const failReason = checkFailStatus(student);
+resStudents.forEach(student => {
+    const failReason = checkfailStudent(student);
     // fail status checked before checking grades
     if (failReason) {
         student.grade = failReason;
