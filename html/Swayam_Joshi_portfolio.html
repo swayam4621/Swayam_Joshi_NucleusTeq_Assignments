@@ -9,6 +9,9 @@
 
 <body>
 
+<!-- Header section consists of the name in h1 and professional title with h2
+    I have provided the image source locally and added an alt description-->
+
     <header>
         <h1>Swayam Joshi</h1>
         <h2>Java Developer & Intern at NucleusTeq</h2>
@@ -16,6 +19,7 @@
             width="100">
     </header>
 
+    <!-- Each of the list elements in nav section have the internal links using ids -->
     <nav>
         <ul>
             <li><a href="#about">About Me</a></li>
@@ -33,7 +37,7 @@
     </nav>
 
     <section id="about">
-        <hr>
+        <hr> <!--adds a horizontal line to the webpage above the about me heading-->
         <h2>About me</h2>
         <p>I am a final year <strong>Computer Science student</strong>, with a strong foundation in <em>Java and
                 SpringBoot</em> and am always aspiring to learn more about new twchnologies.</p>
@@ -41,7 +45,7 @@
 
     <section id="skills">
         <h2>Skills</h2>
-        <ul id="techskills" style="list-style-type: square;">
+        <ul id="techskills" style="list-style-type: square;"> <!--this id given here is used to jump to this section from the nav section -->
             <li>Technical Skills</li>
             <ul>
                 <li>Java</li>
@@ -58,10 +62,11 @@
             </li>
         </ul>
     </section>
-
+ 
+    <!--The education section is expected to render a table that displays the educational background in a clean organized way-->
     <section id="education">
         <h2>Education</h2>
-        <table border="1" cellpadding="10" width="100%">
+        <table border="1" cellpadding="10" width="100%"> <!--the table is invisble by default therefore I had to add border cellpadding and width specs-->
             <thead>
                 <tr>
                     <th>Degree</th>
@@ -72,7 +77,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td rowspan="2">B.Tech CSE</td>
+                    <td rowspan="2">B.Tech CSE</td>  <!-- Rowspan makes the row size as long as the number given across it, here it makes the row teo cells wide-->
                     <td>Medicaps University, Indore</td>
                     <td>2022 - 2026</td>
                     <td>8.5 CGPA</td>
@@ -96,6 +101,7 @@
         <h2>Projects</h2>
         <ol>
             <li>
+                <!-- Article tag used to define projects that are self contained and can be resused-->
                 <article>
                     <h3>BankApp</h3>
                     <p>A RESTful banking system developed using Java and Spring Boot.</p>
@@ -131,6 +137,7 @@
                 <label for="Gender">Female</label>
             </div>
             <div>
+                <!-- Reason for contact seemed like a better alternative than skills interested in, which was in the assignment reference image so I have used that-->
                 <label for="reason">Reason for Contact:</label><br>
                 <select id="reason" name="reason">
                     <option value="collaboration">Collaboration</option>
@@ -146,7 +153,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Swayam Joshi. All rights reserved.</p>
+        <p>&copy; 2026 Swayam Joshi. All rights reserved.</p> <!-- &copy is used to represnt a copyright symbol-->
         <a href="https://www.linkedin.com/in/swayam-joshi-806727301/">LinkedIn Profile</a> |
         <a href="https://github.com/swayam4621">GitHub</a>
     </footer>
