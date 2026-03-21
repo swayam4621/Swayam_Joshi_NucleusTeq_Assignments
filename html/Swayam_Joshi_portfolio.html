@@ -112,3 +112,38 @@
         </ol>
     </section>
 
+    <section id="contact">
+        <h2>Contact Me</h2>
+        <form action="#" method="post">
+            <div>
+                <label for="name">Name:</label><br>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label>Gender:</label><br>
+                <input type="radio" id="Gender" name="type" value="Male">
+                <label for="Gender">Male</label>
+                <input type="radio" id="Gender" name="type" value="Female">
+                <label for="Gender">Female</label>
+            </div>
+            <div>
+                <label for="reason">Reason for Contact:</label><br>
+                <select id="reason" name="reason">
+                    <option value="collaboration">Collaboration</option>
+                    <option value="hiring">Hiring</option>
+                </select>
+            </div>
+            <div>
+                <label for="message">Message:</label><br>
+                <textarea id="message" name="message"></textarea>
+            </div>
+            <button type="submit">Send</button>
+        </form>
+    </section>
+
+
+
