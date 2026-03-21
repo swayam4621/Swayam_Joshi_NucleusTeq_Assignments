@@ -86,3 +86,13 @@ allSubjects.forEach(sub => {
     });
     console.log(`Highest in ${sub}: ${highest.name} (${highest.score})`);
 });
+
+//calculationg the average for each subject to find out the toughest subject
+console.log("\n--- Subject-wise Average Scores ---");
+allSubjects.forEach(sub => {
+    let subTotal = 0;
+    students.forEach(s => {
+        subTotal += s.marks.find(m => m.subject === sub).score;
+    });
+    console.log(`Average ${sub} Score: ${subTotal / students.length}`);
+});
