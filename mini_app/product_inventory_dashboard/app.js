@@ -86,3 +86,55 @@ function renderForm() {
         </div>
     `;
 }
+
+function renderProducts(dataToRender) {
+    const grid = document.getElementById('inventory-grid');
+    grid.innerHTML = ''; 
+    
+    //empty State Handling
+    if (dataToRender.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: #fff; border: 1px solid #ddd; border-radius: 8px;">
+                <p style="font-size: 1.2rem; color: #565959;">No products found matching those criteria.</p>
+            </div>`;
+        return;
+    }
+
+    dataToRender.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'product-card';
+        div.innerHTML = `
+            <div class="p-title">${p.name}</div>
+            <p style="font-size: 1.2rem; font-weight: bold; margin: 8px 0;">₹${p.price.toLocaleString('en-IN')}</p>
+            <p style="font-size: 0.9rem; margin: 4px 0;">Category: <strong>${p.category}</strong></p>
+            <p style="font-size: 0.9rem; margin: 4px 0; margin-bottom: 15px;">
+                Stock: ${p.stock <= 0 ? '<span style="color:#b12704; font-weight:bold;">Out of Stock</span>' : p.stock}
+            </p>
+            <button class="amz-btn btn-delete" style="width: 100%;" onclick="deleteItem(${p.id})">Delete Item</button>
+        `;
+        grid.appendChild(div);
+    });
+}
+
+function updateAnalytics(data) {
+    const totalProducts = data.length;
+    const totalValue = data.reduce((acc, curr) => acc + (curr.price * curr.stock), 0);
+    const outOfStock = data.filter(p => p.stock === 0).length;
+
+    const section = document.getElementById('analytics-section');
+    section.className = "stats-container";
+    section.innerHTML = `
+        <div class="stat-box">
+            <h3>TOTAL PRODUCTS</h3>
+            <p>${totalProducts}</p>
+        </div>
+        <div class="stat-box">
+            <h3>TOTAL INVENTORY VALUE</h3>
+            <p>₹${totalValue.toLocaleString('en-IN')}</p>
+        </div>
+        <div class="stat-box">
+            <h3>OUT OF STOCK</h3>
+            <p style="color: #b12704;">${outOfStock}</p>
+        </div>
+    `;
+}
