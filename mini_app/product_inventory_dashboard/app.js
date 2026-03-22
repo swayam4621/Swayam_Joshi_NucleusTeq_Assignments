@@ -12,3 +12,13 @@ const initialProducts = [
     { id: 107, name: "USB-C Fast Charger", price: 1500, stock: 20, category: "accessories" },
     { id: 108, name: "Mechanical Keyboard", price: 8500, stock: 4, category: "electronics" }
 ];
+
+//fetching the inventory
+function fetchInventory() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const data = JSON.parse(localStorage.getItem('inventory')) || initialProducts;
+            resolve(data);
+        }, 1500);
+    });
+}
