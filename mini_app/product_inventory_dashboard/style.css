@@ -1,0 +1,17 @@
+/*used amazon like colors for the dashboard*/
+:root {
+    --amz-navy: #232f3e;
+    --amz-orange: #ffd814;
+    --amz-orange-hover: #f7ca00;
+    --amz-bg: #eaeded;
+    --amz-text: #0f1111;
+    --amz-link: #007185;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--amz-bg);
+    color: var(--amz-text);
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+}
