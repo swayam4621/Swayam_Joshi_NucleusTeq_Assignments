@@ -58,3 +58,27 @@ body {
     font-weight: bold;
     margin: 5px 0 0;
 }
+
+/*on amazon the inputs have a distinct orange focus ring, flex layout to keep the controls organized*/
+.filter-bar {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+input, select {
+    padding: 8px 12px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #e77600;
+    box-shadow: 0 0 3px 2px rgba(228, 121, 17, 0.5);
+}
