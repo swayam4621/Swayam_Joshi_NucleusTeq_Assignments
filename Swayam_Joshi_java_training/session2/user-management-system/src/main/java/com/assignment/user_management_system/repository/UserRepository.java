@@ -18,4 +18,18 @@ public class UserRepository {
     }
 
     public void save(User user) { users.add(user); }
+
+
+public boolean delete(Long id) {
+    return users.removeIf(user -> user.getId().equals(id));
+}
+
+public void update(User updatedUser) {
+    for (int i = 0; i < users.size(); i++) {
+        if (users.get(i).getId().equals(updatedUser.getId())) {
+            users.set(i, updatedUser);
+            return;
+        }
+    }
+}
 }
