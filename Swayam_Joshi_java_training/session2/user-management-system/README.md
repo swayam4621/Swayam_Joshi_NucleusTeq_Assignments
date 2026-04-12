@@ -55,7 +55,7 @@ The project follows a **Strict Layered Architecture** to ensure maintainability:
 * **Language:** Java 17
 * **Framework:** Spring Boot 3.x
 * **Build Tool:** Maven
-* **API Testing:** Postman / Thunder Client
+* **API Testing:** Postman 
 
 ---
 
