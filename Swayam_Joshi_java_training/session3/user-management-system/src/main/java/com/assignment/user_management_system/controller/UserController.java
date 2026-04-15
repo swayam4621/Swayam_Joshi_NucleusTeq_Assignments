@@ -26,12 +26,22 @@ public class UserController {
     }
 
     @GetMapping("/users/search")
-    public ResponseEntity<List<User>> search(
+    public ResponseEntity<?> search(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer age,
             @RequestParam(required = false) String role) {
         
         List<User> results = userService.searchUsers(name, age, role);
+        
+        // to handle empty list returned by the search
+        if (results.isEmpty()) {
+            String message = userService.getEmptySearchResultMessage(name, age, role);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", message);
+            return ResponseEntity.ok(response);
+        }
+
+        // if results exist we return the list as originally intended.
         return ResponseEntity.ok(results);
     }
 
