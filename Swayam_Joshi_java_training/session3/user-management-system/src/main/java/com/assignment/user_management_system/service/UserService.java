@@ -55,16 +55,16 @@ public class UserService {
         return sb.toString().trim();
     }
 
+    
     // --- Data submission API Service ---
-
     public User submitUser(User user) {
 
         userValidatorComponent.validateForSubmit(user);
         return userRepository.save(user);
     }
+    
 
     // --- Delete with confirmation check Service ---
-
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("no user exists with id: " + id));
