@@ -77,48 +77,48 @@ The project follows a **Strict Layered Architecture**:
 
 #### SEARCHING WITH NO PARAMETERS - Returns all users
 
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/7704167a-7697-4f0f-b1df-42a7cddc26e9" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/7704167a-7697-4f0f-b1df-42a7cddc26e9" />
 
 #### SEARCH WITH FILTERS
 
 #### 1) Search by name (Case Insensitive search for name)
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/0384c4ae-3c55-496b-8032-c584b1ec3672" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/0384c4ae-3c55-496b-8032-c584b1ec3672" />
 
 #### 2) Search by age
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/ed7f9f4b-22bc-400b-a832-d3748d61d80b" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/ed7f9f4b-22bc-400b-a832-d3748d61d80b" />
 
 #### 3) Search by role
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/e5215d47-9e97-43c6-a62f-387800a615c6" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/e5215d47-9e97-43c6-a62f-387800a615c6" />
 
 #### 4) Cross filters
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/34d80bf5-99bd-4000-b837-0ea5914c6744" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/34d80bf5-99bd-4000-b837-0ea5914c6744" />
 
 ### DATA SUBMISSION API
 
 #### Basic checks (NULL & Empty (400))
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/d8dd7f4c-ca5e-4628-90d9-8141a8459dd6" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/d8dd7f4c-ca5e-4628-90d9-8141a8459dd6" />
 
 #### Successful submission (201)
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/7ba6d78f-c96f-4aa6-811b-433cc1a25786" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/7ba6d78f-c96f-4aa6-811b-433cc1a25786" />
 
 
 ### DELETE WITH CONFIRMATION CHECK
 #### Deleting without confirmation
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/d55b9afe-7b9a-4e72-9da4-9d4525cb3861" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/d55b9afe-7b9a-4e72-9da4-9d4525cb3861" />
 
 #### Deleting with confirmation 
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/fa9e3f30-d126-4afa-99f6-d140796b8c12" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/fa9e3f30-d126-4afa-99f6-d140796b8c12" />
 
 ### EXCEPTION HANDLING
 #### Global Exception Handling (fallback)
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/e44a0579-88da-41a7-b076-be13d50691ff" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/e44a0579-88da-41a7-b076-be13d50691ff" />
 
 ### Edge Case Handling
 #### Deleting a user that does not exist (after confirmation)
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/8a751ca7-7a14-4f00-8fdd-80f49941fb50" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/8a751ca7-7a14-4f00-8fdd-80f49941fb50" />
 
 #### Search resulting no records (Resulting in message stating the records not found for the particular search item)
-<img width="800" height="900" alt="image" src="https://github.com/user-attachments/assets/186a2c60-c6dc-4003-875d-d46bde3a4299" />
+<img width="800" height="500" alt="image" src="https://github.com/user-attachments/assets/186a2c60-c6dc-4003-875d-d46bde3a4299" />
 
 ---
 
