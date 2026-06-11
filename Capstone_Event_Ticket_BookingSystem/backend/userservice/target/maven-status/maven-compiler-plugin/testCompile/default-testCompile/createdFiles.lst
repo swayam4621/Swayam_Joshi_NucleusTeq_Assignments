@@ -1,0 +1,6 @@
+com\eventbooking\userservice\exception\GlobalExceptionHandlerTest.class
+com\eventbooking\userservice\security\JwtUtilTest.class
+com\eventbooking\userservice\service\AuthServiceTest.class
+com\eventbooking\userservice\UserserviceApplicationTests.class
+com\eventbooking\userservice\controller\AuthControllerTest.class
+com\eventbooking\userservice\security\JwtAuthenticationFilterTest.class

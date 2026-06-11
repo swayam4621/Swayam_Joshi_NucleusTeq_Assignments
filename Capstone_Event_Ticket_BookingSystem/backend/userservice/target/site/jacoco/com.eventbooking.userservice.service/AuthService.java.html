@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">userservice</a> &gt; <a href="index.source.html" class="el_package">com.eventbooking.userservice.service</a> &gt; <span class="el_source">AuthService.java</span></div><h1>AuthService.java</h1><pre class="source lang-java linenums">package com.eventbooking.userservice.service;
+
+import com.eventbooking.userservice.dto.AuthResponse;
+import com.eventbooking.userservice.dto.LoginRequest;
+import com.eventbooking.userservice.dto.RegisterRequest;
+import com.eventbooking.userservice.entity.User;
+import com.eventbooking.userservice.exception.InvalidCredentialsException;
+import com.eventbooking.userservice.exception.UserAlreadyExistsException;
+import com.eventbooking.userservice.repository.UserRepository;
+import com.eventbooking.userservice.security.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class AuthService {
+
+<span class="fc" id="L21">    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);</span>
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+
+<span class="fc" id="L27">    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {</span>
+<span class="fc" id="L28">        this.userRepository = userRepository;</span>
+<span class="fc" id="L29">        this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L30">        this.jwtUtil = jwtUtil;</span>
+<span class="fc" id="L31">    }</span>
+
+    public AuthResponse register(RegisterRequest request) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (userRepository.existsByEmail(request.getEmail())) {</span>
+<span class="fc" id="L35">            throw new UserAlreadyExistsException(&quot;Email is already registered: &quot; + request.getEmail());</span>
+        }
+
+<span class="fc" id="L38">        User user = new User();</span>
+<span class="fc" id="L39">        user.setName(request.getName());</span>
+<span class="fc" id="L40">        user.setEmail(request.getEmail());</span>
+<span class="fc" id="L41">        user.setPassword(passwordEncoder.encode(request.getPassword()));</span>
+<span class="fc" id="L42">        user.setPhone(request.getPhone());</span>
+<span class="fc" id="L43">        user.setRole(request.getRole());</span>
+
+<span class="fc" id="L45">        userRepository.save(user);</span>
+<span class="fc" id="L46">        logger.info(&quot;New user registered successfully: {}&quot;, user.getEmail());</span>
+
+<span class="fc" id="L48">        return new AuthResponse(null, user.getEmail(), user.getRole().name(), &quot;Registration successful! Please login.&quot;);</span>
+    }
+
+    public AuthResponse login(LoginRequest request) {
+<span class="fc" id="L52">        Optional&lt;User&gt; userOpt = userRepository.findByEmail(request.getEmail());</span>
+
+<span class="fc bfc" id="L54" title="All 4 branches covered.">        if (userOpt.isEmpty() || !passwordEncoder.matches(request.getPassword(), userOpt.get().getPassword())) {</span>
+<span class="fc" id="L55">            logger.warn(&quot;Failed login attempt for email: {}&quot;, request.getEmail());</span>
+<span class="fc" id="L56">            throw new InvalidCredentialsException(&quot;Invalid email or password&quot;);</span>
+        }
+
+<span class="fc" id="L59">        User user = userOpt.get();</span>
+<span class="fc" id="L60">        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());</span>
+<span class="fc" id="L61">        logger.info(&quot;User logged in successfully: {}&quot;, user.getEmail());</span>
+
+<span class="fc" id="L63">        return new AuthResponse(token, user.getEmail(), user.getRole().name(), &quot;Login successful&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

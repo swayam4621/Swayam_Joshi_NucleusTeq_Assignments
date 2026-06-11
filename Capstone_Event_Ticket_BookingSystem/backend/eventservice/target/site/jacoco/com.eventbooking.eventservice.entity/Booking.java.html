@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Booking.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">eventservice</a> &gt; <a href="index.source.html" class="el_package">com.eventbooking.eventservice.entity</a> &gt; <span class="el_source">Booking.java</span></div><h1>Booking.java</h1><pre class="source lang-java linenums">package com.eventbooking.eventservice.entity;
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = &quot;bookings&quot;)
+<span class="fc" id="L8">public class Booking {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Long eventId;
+    
+    //to store userEmail in customer_email instead of user_email to avoid confusion with organizer email in events table
+    @Column(name = &quot;customer_email&quot;)
+    private String userEmail; 
+
+    private int numberOfTickets;
+    private double totalAmount;
+<span class="fc" id="L21">    public enum Status {</span>
+<span class="fc" id="L22">        CONFIRMED, CANCELLED</span>
+    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = &quot;status&quot;)
+    private Status status;
+
+    @Column(name = &quot;booking_time&quot;)
+    private LocalDateTime bookingDate;
+
+    public Long getId() {
+<span class="nc" id="L32">        return id;</span>
+    }
+    public void setId(Long id) {
+<span class="nc" id="L35">        this.id = id;</span>
+<span class="nc" id="L36">    }</span>
+    public Long getEventId() {
+<span class="fc" id="L38">        return eventId;</span>
+    }
+    public void setEventId(Long eventId) {
+<span class="fc" id="L41">        this.eventId = eventId;</span>
+<span class="fc" id="L42">    }</span>
+    public String getUserEmail() {
+<span class="fc" id="L44">        return userEmail;</span>
+    }
+    public void setUserEmail(String userEmail) {
+<span class="fc" id="L47">        this.userEmail = userEmail;</span>
+<span class="fc" id="L48">    }</span>
+    public int getNumberOfTickets() {
+<span class="fc" id="L50">        return numberOfTickets;</span>
+    }
+    public void setNumberOfTickets(int numberOfTickets) {
+<span class="fc" id="L53">        this.numberOfTickets = numberOfTickets;</span>
+<span class="fc" id="L54">    }</span>
+    public double getTotalAmount() {
+<span class="nc" id="L56">        return totalAmount;</span>
+    }
+    public void setTotalAmount(double totalAmount) {
+<span class="fc" id="L59">        this.totalAmount = totalAmount;</span>
+<span class="fc" id="L60">    }</span>
+    public Status getStatus() {
+<span class="fc" id="L62">        return status;</span>
+    }
+    public void setStatus(Status status) {
+<span class="fc" id="L65">        this.status = status;</span>
+<span class="fc" id="L66">    }</span>
+    public LocalDateTime getBookingDate() {
+<span class="nc" id="L68">        return bookingDate;</span>
+    }
+    public void setBookingDate(LocalDateTime bookingDate) {
+<span class="fc" id="L71">        this.bookingDate = bookingDate;</span>
+<span class="fc" id="L72">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EventService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">eventservice</a> &gt; <a href="index.source.html" class="el_package">com.eventbooking.eventservice.service</a> &gt; <span class="el_source">EventService.java</span></div><h1>EventService.java</h1><pre class="source lang-java linenums">package com.eventbooking.eventservice.service;
+
+import com.eventbooking.eventservice.dto.EventRequest;
+import com.eventbooking.eventservice.entity.Event;
+import com.eventbooking.eventservice.exception.EventNotFoundException;
+import com.eventbooking.eventservice.exception.UnauthorizedAccessException;
+import com.eventbooking.eventservice.exception.PastEventCreationException;
+import com.eventbooking.eventservice.repository.EventRepository;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.time.LocalDateTime;
+
+@Service
+public class EventService {
+
+    private final EventRepository eventRepository;
+
+<span class="fc" id="L18">    public EventService(EventRepository eventRepository) {</span>
+<span class="fc" id="L19">        this.eventRepository = eventRepository;</span>
+<span class="fc" id="L20">    }</span>
+
+    public Event createEvent(EventRequest request, String organizerEmail) {
+<span class="fc" id="L23">        Event event = new Event();</span>
+
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (request.getEventDate().isBefore(LocalDateTime.now())) {</span>
+<span class="fc" id="L26">            throw new PastEventCreationException(&quot;Event date and time cannot be in the past.&quot;);</span>
+        }
+<span class="fc" id="L28">        event.setName(request.getTitle());</span>
+<span class="fc" id="L29">        event.setDescription(request.getDescription());</span>
+<span class="fc" id="L30">        event.setEventDateTime(request.getEventDate());</span>
+<span class="fc" id="L31">        event.setVenue(request.getLocation());</span>
+<span class="fc" id="L32">        event.setTicketPrice(request.getPrice());</span>
+<span class="fc" id="L33">        event.setTotalSeats(request.getTotalTickets());</span>
+<span class="fc" id="L34">        event.setAvailableSeats(request.getTotalTickets());</span>
+<span class="fc" id="L35">        event.setImageUrl(request.getImageUrl());</span>
+<span class="fc" id="L36">        event.setArtistName(request.getArtistName());</span>
+<span class="fc" id="L37">        event.setCategory(request.getCategory());</span>
+<span class="fc" id="L38">        event.setOrganizerEmail(organizerEmail);</span>
+
+<span class="fc" id="L40">        return eventRepository.save(event);</span>
+    }
+
+    public Event updateEvent(Long eventId, EventRequest request, String organizerEmail) {
+<span class="nc" id="L44">        Event event = eventRepository.findById(eventId)</span>
+<span class="nc" id="L45">                .orElseThrow(() -&gt; new EventNotFoundException(&quot;Event with ID &quot; + eventId + &quot; could not be found.&quot;));</span>
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (request.getEventDate().isBefore(LocalDateTime.now())) {</span>
+<span class="nc" id="L48">            throw new PastEventCreationException(&quot;Event date and time cannot be in the past.&quot;);</span>
+        }
+
+        // prevents a NullPointerException if event.getOrganizerEmail() is null
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (!organizerEmail.equals(event.getOrganizerEmail())) {</span>
+<span class="nc" id="L53">            throw new UnauthorizedAccessException(&quot;Not authorized to update this event.&quot;);</span>
+        }
+
+<span class="nc" id="L56">        event.setName(request.getTitle());</span>
+<span class="nc" id="L57">        event.setDescription(request.getDescription());</span>
+<span class="nc" id="L58">        event.setCategory(request.getCategory());</span>
+<span class="nc" id="L59">        event.setEventDateTime(request.getEventDate());</span>
+<span class="nc" id="L60">        event.setVenue(request.getLocation());</span>
+<span class="nc" id="L61">        event.setTicketPrice(request.getPrice());</span>
+<span class="nc" id="L62">        event.setTotalSeats(request.getTotalTickets());</span>
+<span class="nc" id="L63">        event.setImageUrl(request.getImageUrl());</span>
+<span class="nc" id="L64">        event.setArtistName(request.getArtistName());</span>
+
+<span class="nc" id="L66">        return eventRepository.save(event);</span>
+    }
+
+    public List&lt;Event&gt; getEventsByOrganizer(String organizerEmail, String filter) {
+<span class="nc" id="L70">        LocalDateTime now = LocalDateTime.now();</span>
+
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (&quot;upcoming&quot;.equalsIgnoreCase(filter)) {</span>
+<span class="nc" id="L73">            return eventRepository.findByOrganizerEmailAndStatusAndEventDateTimeAfterOrderByEventDateTimeAsc(</span>
+                    organizerEmail, Event.EventStatus.ACTIVE, now);
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        } else if (&quot;past&quot;.equalsIgnoreCase(filter)) {</span>
+<span class="nc" id="L76">            return eventRepository.findByOrganizerEmailAndStatusAndEventDateTimeBeforeOrderByEventDateTimeDesc(</span>
+                    organizerEmail, Event.EventStatus.ACTIVE, now);
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        } else if (&quot;cancelled&quot;.equalsIgnoreCase(filter)) {</span>
+<span class="nc" id="L79">            return eventRepository.findByOrganizerEmailAndStatusOrderByEventDateTimeDesc(</span>
+                    organizerEmail, Event.EventStatus.CANCELLED_BY_ORGANIZER);
+        }
+<span class="nc" id="L82">        return eventRepository.findByOrganizerEmail(organizerEmail);</span>
+    }
+
+    public List&lt;Event&gt; getAllEvents(String filter) {
+<span class="nc" id="L86">        LocalDateTime now = LocalDateTime.now();</span>
+
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (&quot;upcoming&quot;.equalsIgnoreCase(filter)) {</span>
+<span class="nc" id="L89">            return eventRepository.findByStatusAndEventDateTimeAfterOrderByEventDateTimeAsc(</span>
+                    Event.EventStatus.ACTIVE, now);
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        } else if (&quot;past&quot;.equalsIgnoreCase(filter)) {</span>
+<span class="nc" id="L92">            return eventRepository.findByStatusAndEventDateTimeBeforeOrderByEventDateTimeDesc(</span>
+                    Event.EventStatus.ACTIVE, now);
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        } else if (&quot;artists&quot;.equalsIgnoreCase(filter)) {</span>
+<span class="nc" id="L95">            return eventRepository</span>
+<span class="nc" id="L96">                    .findByStatusAndEventDateTimeAfterAndArtistNameIsNotNullAndArtistNameNotOrderByEventDateTimeAsc(</span>
+                            Event.EventStatus.ACTIVE, now, &quot;&quot;);
+        }
+        // fallback
+<span class="nc" id="L100">        return eventRepository.findAll();</span>
+    }
+
+    public Event getEventById(Long eventId) {
+<span class="nc" id="L104">        return eventRepository.findById(eventId)</span>
+<span class="nc" id="L105">                .orElseThrow(() -&gt; new EventNotFoundException(&quot;Event with ID &quot; + eventId + &quot; could not be found.&quot;));</span>
+    }
+
+    public Event cancelEvent(Long eventId, String organizerEmail) {
+<span class="nc" id="L109">        Event event = eventRepository.findById(eventId)</span>
+<span class="nc" id="L110">                .orElseThrow(() -&gt; new EventNotFoundException(&quot;Event with ID &quot; + eventId + &quot; could not be found.&quot;));</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (!organizerEmail.equals(event.getOrganizerEmail())) {</span>
+<span class="nc" id="L113">            throw new UnauthorizedAccessException(&quot;Not authorized to cancel this event.&quot;);</span>
+        }
+
+<span class="nc" id="L116">        event.setStatus(Event.EventStatus.CANCELLED_BY_ORGANIZER);</span>
+<span class="nc" id="L117">        return eventRepository.save(event);</span>
+    }
+
+    public List&lt;Event&gt; searchAndFilterActiveEvents(String keyword, String category, String timeframe) {
+<span class="nc" id="L121">        List&lt;Event&gt; activeEvents = eventRepository.findByStatus(Event.EventStatus.ACTIVE);</span>
+
+<span class="nc" id="L123">        LocalDateTime now = LocalDateTime.now();</span>
+
+<span class="nc" id="L125">        return activeEvents.stream()</span>
+<span class="nc" id="L126">                .filter(event -&gt; {</span>
+
+<span class="nc" id="L128">                    LocalDateTime eventDate = event.getEventDateTime();</span>
+<span class="nc bnc" id="L129" title="All 4 branches missed.">                    if (eventDate == null || eventDate.isBefore(now)) {</span>
+<span class="nc" id="L130">                        return false;</span>
+                    }
+<span class="nc bnc" id="L132" title="All 4 branches missed.">                    if (keyword != null &amp;&amp; !keyword.trim().isEmpty()) {</span>
+<span class="nc" id="L133">                        String searchKey = keyword.toLowerCase().trim();</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">                        String name = event.getName() != null ? event.getName().toLowerCase() : &quot;&quot;;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">                        String venue = event.getVenue() != null ? event.getVenue().toLowerCase() : &quot;&quot;;</span>
+
+<span class="nc bnc" id="L137" title="All 4 branches missed.">                        if (!name.contains(searchKey) &amp;&amp; !venue.contains(searchKey)) {</span>
+<span class="nc" id="L138">                            return false;</span>
+                        }
+                    }
+
+<span class="nc bnc" id="L142" title="All 6 branches missed.">                    if (category != null &amp;&amp; !category.trim().isEmpty() &amp;&amp; !category.equalsIgnoreCase(&quot;All&quot;)) {</span>
+<span class="nc bnc" id="L143" title="All 4 branches missed.">                        if (event.getCategory() == null || !event.getCategory().equalsIgnoreCase(category)) {</span>
+<span class="nc" id="L144">                            return false;</span>
+                        }
+                    }
+<span class="nc bnc" id="L147" title="All 6 branches missed.">                    if (timeframe != null &amp;&amp; !timeframe.trim().isEmpty() &amp;&amp; !timeframe.equalsIgnoreCase(&quot;All&quot;)) {</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">                        if (eventDate == null) {</span>
+<span class="nc" id="L149">                            return false;</span>
+                        }
+
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                        if (timeframe.equalsIgnoreCase(&quot;Today&quot;)) {</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">                            if (!eventDate.toLocalDate().isEqual(now.toLocalDate()))</span>
+<span class="nc" id="L154">                                return false;</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                        } else if (timeframe.equalsIgnoreCase(&quot;Tomorrow&quot;)) {</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">                            if (!eventDate.toLocalDate().isEqual(now.toLocalDate().plusDays(1)))</span>
+<span class="nc" id="L157">                                return false;</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">                        } else if (timeframe.equalsIgnoreCase(&quot;This Weekend&quot;)) {</span>
+<span class="nc" id="L159">                            java.time.DayOfWeek day = eventDate.getDayOfWeek();</span>
+<span class="nc bnc" id="L160" title="All 4 branches missed.">                            boolean isWeekend = (day == java.time.DayOfWeek.SATURDAY</span>
+                                    || day == java.time.DayOfWeek.SUNDAY);
+<span class="nc bnc" id="L162" title="All 2 branches missed.">                            boolean isUpcoming = eventDate.isAfter(now.minusDays(1))</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">                                    &amp;&amp; eventDate.isBefore(now.plusDays(7));</span>
+<span class="nc bnc" id="L164" title="All 4 branches missed.">                            if (!isWeekend || !isUpcoming)</span>
+<span class="nc" id="L165">                                return false;</span>
+                        }
+                    }
+
+<span class="nc" id="L169">                    return true;</span>
+                })
+<span class="nc" id="L171">                .collect(java.util.stream.Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

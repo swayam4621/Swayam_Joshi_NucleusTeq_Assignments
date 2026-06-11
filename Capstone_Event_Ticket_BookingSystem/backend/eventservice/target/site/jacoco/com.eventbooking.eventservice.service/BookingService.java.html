@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookingService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">eventservice</a> &gt; <a href="index.source.html" class="el_package">com.eventbooking.eventservice.service</a> &gt; <span class="el_source">BookingService.java</span></div><h1>BookingService.java</h1><pre class="source lang-java linenums">package com.eventbooking.eventservice.service;
+
+import com.eventbooking.eventservice.dto.BookingRequest;
+import com.eventbooking.eventservice.entity.Booking;
+import com.eventbooking.eventservice.entity.Event;
+import com.eventbooking.eventservice.repository.BookingRepository;
+import com.eventbooking.eventservice.repository.EventRepository;
+import com.eventbooking.eventservice.exception.EventNotFoundException;
+import com.eventbooking.eventservice.exception.InsufficientSeatsException;
+import com.eventbooking.eventservice.exception.UnauthorizedAccessException;
+import com.eventbooking.eventservice.exception.BookingCancellationDeadlineException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class BookingService {
+
+    private final BookingRepository bookingRepository;
+    private final EventRepository eventRepository;
+
+<span class="fc" id="L25">    public BookingService(BookingRepository bookingRepository, EventRepository eventRepository) {</span>
+<span class="fc" id="L26">        this.bookingRepository = bookingRepository;</span>
+<span class="fc" id="L27">        this.eventRepository = eventRepository;</span>
+<span class="fc" id="L28">    }</span>
+
+    @Transactional
+    public void processBooking(BookingRequest request, String userEmail) {
+<span class="fc" id="L32">        Event event = eventRepository.findById(request.getEventId())</span>
+<span class="fc" id="L33">                .orElseThrow(() -&gt; new EventNotFoundException(</span>
+<span class="fc" id="L34">                        &quot;Event with ID &quot; + request.getEventId() + &quot; could not be found.&quot;));</span>
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (event.getAvailableSeats() &lt; request.getNumberOfTickets()) {</span>
+<span class="fc" id="L37">            throw new InsufficientSeatsException(&quot;Not enough seats available&quot;);</span>
+        }
+
+<span class="fc" id="L40">        event.setAvailableSeats(event.getAvailableSeats() - request.getNumberOfTickets());</span>
+<span class="fc" id="L41">        eventRepository.save(event);</span>
+
+<span class="fc" id="L43">        Booking booking = new Booking();</span>
+<span class="fc" id="L44">        booking.setEventId(request.getEventId());</span>
+<span class="fc" id="L45">        booking.setUserEmail(userEmail);</span>
+<span class="fc" id="L46">        booking.setNumberOfTickets(request.getNumberOfTickets());</span>
+<span class="fc" id="L47">        booking.setTotalAmount(request.getTotalAmount());</span>
+<span class="fc" id="L48">        booking.setStatus(Booking.Status.CONFIRMED);</span>
+<span class="fc" id="L49">        booking.setBookingDate(LocalDateTime.now());</span>
+
+<span class="fc" id="L51">        bookingRepository.save(booking);</span>
+<span class="fc" id="L52">    }</span>
+
+    public List&lt;Booking&gt; getBookingsForEvent(Long eventId) {
+<span class="nc" id="L55">        return bookingRepository.findByEventId(eventId);</span>
+    }
+
+    public List&lt;Booking&gt; getMyBookings(String email) {
+<span class="nc" id="L59">        return bookingRepository.findByUserEmail(email);</span>
+    }
+
+    @Transactional
+    public void cancelBooking(Long bookingId, String userEmail) {
+<span class="fc" id="L64">        Booking booking = bookingRepository.findById(bookingId)</span>
+<span class="pc" id="L65">                .orElseThrow(() -&gt; new RuntimeException(&quot;Booking not found&quot;));</span>
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (!booking.getUserEmail().equals(userEmail)) {</span>
+<span class="fc" id="L68">            throw new UnauthorizedAccessException(&quot;You are not authorized to cancel this booking&quot;);</span>
+        }
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (booking.getStatus() == Booking.Status.CANCELLED) {</span>
+<span class="nc" id="L71">            throw new RuntimeException(&quot;Booking is already cancelled.&quot;);</span>
+        }
+<span class="fc" id="L73">        Event event = eventRepository.findById(booking.getEventId())</span>
+<span class="pc" id="L74">            .orElseThrow(() -&gt; new RuntimeException(&quot;Event not found&quot;));</span>
+        
+<span class="fc" id="L76">        LocalDateTime cancellationDeadline = event.getEventDateTime().minusHours(3);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (LocalDateTime.now().isAfter(cancellationDeadline)) {</span>
+<span class="fc" id="L78">            throw new BookingCancellationDeadlineException(&quot;Tickets cannot be cancelled within 3 hours of the event start time.&quot;);</span>
+        }
+        
+<span class="fc" id="L81">        event.setAvailableSeats(event.getAvailableSeats() + booking.getNumberOfTickets());</span>
+<span class="fc" id="L82">        eventRepository.save(event);</span>
+<span class="fc" id="L83">        booking.setStatus(Booking.Status.CANCELLED);</span>
+<span class="fc" id="L84">        bookingRepository.save(booking);</span>
+<span class="fc" id="L85">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
