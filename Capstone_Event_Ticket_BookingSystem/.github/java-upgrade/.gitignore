@@ -1,0 +1,10 @@
+**/.env
+coverage/
+target/
+.idea/
+*.iml
+*.log
+*.tmp
+*.bak
+*.swp       
+

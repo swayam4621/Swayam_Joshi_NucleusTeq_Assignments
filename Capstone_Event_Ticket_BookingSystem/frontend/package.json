@@ -1,0 +1,21 @@
+{
+  "name": "event-booking-frontend-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "js/auth.js"
+    ]
+  }
+}

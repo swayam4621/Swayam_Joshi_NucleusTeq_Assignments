@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvenTix - Organizer Dashboard</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/modals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">EvenTix <span class="logo-highlight">ORGANIZER</span></div>
+        <div class="nav-links">
+            <span id="user-display-name" class="user-name-display"></span>
+            <button id="logout-btn" class="nav-btn-outline">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-panel">
+
+        <!-- Main tabs my events, create event --> 
+        <div class="tab-container mb-30">
+            <button class="tab-btn active-tab main-tab-trigger" id="tab-my-events" data-target="my-events">My Events</button>
+            <button class="tab-btn inactive-tab main-tab-trigger" id="tab-create" data-target="create">Create New Event</button>
+        </div>
+
+        <div id="my-events-section">
+            <h2 class="section-title mb-20">Manage Your Events</h2>
+
+            <!-- Subtabs upcoming, past and cancelled -->
+            <div class="tab-container subtabs-wrapper">
+                <button class="tab-btn active-tab subtab-font subtab-trigger" id="subtab-upcoming" data-subtab="upcoming">Upcoming</button>
+                <button class="tab-btn inactive-tab subtab-font subtab-trigger" id="subtab-past" data-subtab="past">Past</button>
+                <button class="tab-btn inactive-tab subtab-font subtab-trigger" id="subtab-cancelled" data-subtab="cancelled">Cancelled</button>
+            </div>
+
+            <div id="upcoming-grid" class="events-grid"></div>
+            <div id="past-grid" class="events-grid hidden"></div>
+            <div id="cancelled-grid" class="events-grid hidden"></div>
+
+            <div id="no-events-msg" class="hidden">
+                <p class="empty-msg">No events found in this category.</p>
+            </div>
+        </div>
+
+        <!-- Create event form -->
+        <div id="create-section" class="hidden">
+            <h2 class="section-title">Create New Event</h2>
+            <form id="create-event-form">
+                <div class="input-group"><label for="event-title">Event Title</label><input type="text" id="event-title" required></div>
+                <div class="input-group">
+                    <label for="event-category">Category</label>
+                    <select id="event-category" required>
+                        <option value="Music">Music</option>
+                        <option value="Comedy">Comedy</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Nightlife">Nightlife</option>
+                        <option value="Performances">Performances</option>
+                        <option value="Food & Drinks">Food & Drinks</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group"><label for="event-desc">Description</label><input type="text" id="event-desc" required></div>
+                <div class="form-row">
+                    <div class="input-group flex-1"><label for="event-date">Date & Time</label><input type="datetime-local" id="event-date" required></div>
+                    <div class="input-group flex-1"><label for="event-location">Location</label><input type="text" id="event-location" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group flex-1"><label for="event-price">Ticket Price (₹)</label><input type="number" id="event-price" required min="0" step="0.01"></div>
+                    <div class="input-group flex-1"><label for="event-tickets">Total Tickets</label><input type="number" id="event-tickets" required min="1"></div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group flex-1">
+                        <label>Artist / Performer Name (Optional)</label>
+                        <input type="text" id="event-artist">
+                    </div>
+                    <div class="input-group flex-1">
+                        <label>Poster Image URL (Optional)</label>
+                        <input type="url" id="event-image" placeholder="https://...">
+                    </div>
+                </div>
+                <div id="event-error" class="error-msg hidden"></div>
+                <div id="event-success" class="success-msg hidden"></div>
+                <button type="submit" class="btn primary-btn">Publish Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Update event form -->
+    <div id="update-modal" class="modal-backdrop hidden">
+        <div class="auth-wrapper relative modal-box">
+            <button class="close-modal-btn" id="close-update-modal">✕</button>
+            <h2>Update Event</h2>
+            <form id="update-event-form" class="modal-form">
+                <input type="hidden" id="update-event-id">
+                <div class="input-group"><label for="upd-title">Title</label><input type="text" id="upd-title" required></div>
+                <div class="input-group">
+                    <label for="update-event-category">Category</label>
+                    <select id="update-event-category" required>
+                        <option value="Music">Music</option>
+                        <option value="Comedy">Comedy</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Nightlife">Nightlife</option>
+                        <option value="Performances">Performances</option>
+                        <option value="Food & Drinks">Food & Drinks</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group"><label for="upd-desc">Description</label><input type="text" id="upd-desc" required></div>
+                <div class="form-row-sm">
+                    <div class="input-group flex-1"><label for="upd-date">Date & Time</label><input type="datetime-local" id="upd-date" required></div>
+                    <div class="input-group flex-1"><label for="upd-location">Location</label><input type="text" id="upd-location" required></div>
+                </div>
+                <div class="form-row-sm">
+                    <div class="input-group flex-1"><label for="upd-price">Price (₹)</label><input type="number" id="upd-price" required min="0" step="0.01"></div>
+                    <div class="input-group flex-1"><label for="upd-tickets">Total Tickets</label><input type="number" id="upd-tickets" required min="1"></div>
+                </div>
+                <div class="input-group"><label for="upd-image">Image URL (optional)</label><input type="url" id="upd-image" placeholder="https://example.com/image.jpg"></div>
+                <div class="input-group"><label for="upd-artist">Artist Name (optional)</label><input type="text" id="upd-artist" placeholder="Artist or Performer"></div>
+                <div id="upd-error" class="error-msg hidden"></div>
+                <button type="submit" class="btn primary-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event details dialogue box with attendee analytics -->
+    <div id="details-modal" class="modal-backdrop hidden">
+        <div class="auth-wrapper relative modal-box-lg">
+            <button class="close-modal-btn" id="close-details-modal">✕</button>
+
+            <div class="modal-header-flex">
+                <h2 id="det-title" class="modal-title-m0">Event Details</h2>
+                <span id="det-status" class="badge badge-rounded"></span>
+            </div>
+
+            <div class="details-box">
+                <p id="det-desc" class="details-desc"></p>
+                <div class="details-grid">
+                    <div><strong class="details-label">DATE & TIME</strong><span id="det-date" class="details-val"></span></div>
+                    <div><strong class="details-label">VENUE</strong><span id="det-venue" class="details-val"></span></div>
+                    <div><strong class="details-label">TICKET PRICE</strong><span class="details-val">₹<span id="det-price"></span></span></div>
+                    <div><strong class="details-label">CAPACITY</strong><span id="det-avail" class="details-val-highlight"></span> / <span id="det-total" class="details-val"></span> Available</div>
+                </div>
+
+                <div class="analytics-container">
+                    <div class="analytics-header">
+                        <h3>Attendee Analytics</h3>
+                        <button id="download-csv-btn" class="btn primary-btn btn-download">
+                            <i class="fa-solid fa-download"></i> Download CSV
+                        </button>
+                    </div>
+
+                    <div class="details-grid analytics-summary">
+                        <div><strong class="details-label">TICKETS SOLD</strong><span id="det-tickets-sold" class="details-val text-teal">0</span></div>
+                        <div><strong class="details-label">TOTAL REVENUE</strong><span class="details-val text-teal">₹<span id="det-revenue">0.00</span></span></div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="attendee-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Tickets</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendee-table-body">
+                            </tbody>
+                        </table>
+                        <p id="no-attendees-msg" class="empty-table-msg hidden">No tickets sold yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event card template -->
+    <template id="event-card-template">
+        <div class="event-card">
+            <div class="card-header">
+                <h3 class="card-title" aria-label="Event title">Event Title</h3>
+            </div>
+            <p class="card-text-sm date-text"><i class="fa-solid fa-calendar text-teal"></i> <span></span></p>
+            <p class="card-text-sm venue-text"><i class="fa-solid fa-location-dot text-teal"></i> <span></span></p>
+            <p class="card-text price-text"><i class="fa-solid fa-ticket text-teal"></i> ₹<span></span></p>
+            <p class="card-text seats-text mb-20"><i class="fa-solid fa-users text-teal"></i> <span></span></p>
+            <div class="card-actions">
+            </div>
+        </div>
+    </template>
+    
+    <div id="toast-container" class="toast-hidden">
+        <div id="toast-message"></div>
+    </div>
+    <script src="js/organizer.js"></script>
+</body>
+</html>
