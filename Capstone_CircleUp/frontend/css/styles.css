@@ -1,0 +1,246 @@
+:root {
+  --color-bg: #FAF6F0;
+  --color-surface: #FFFFFF;
+  --color-ink: #1F1B16;
+  --color-ink-soft: #6B6259;
+  --color-accent: #E8602C;
+  --color-accent-dark: #C24A1E;
+  --color-line: #E8E1D6;
+  --color-success: #3F7D4F;
+  --color-danger: #C23B3B;
+  --color-pending: #B8862E;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 18px;
+  --shadow-card: 0 1px 2px rgba(31, 27, 22, 0.04), 0 4px 16px rgba(31, 27, 22, 0.06);
+  --max-width: 1080px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.125rem; }
+
+p { margin: 0; color: var(--color-ink-soft); }
+a { color: var(--color-accent-dark); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.page { min-height: 100vh; display: flex; flex-direction: column; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.brand .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  display: inline-block;
+}
+
+.auth-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-dark);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.auth-card h1 { margin-bottom: 0.5rem; }
+.auth-card .subtitle { margin-bottom: 1.75rem; }
+
+.auth-switch {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+}
+
+.field { margin-bottom: 1.125rem; }
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--color-ink);
+}
+.field input, .field textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  transition: border-color 0.15s ease;
+}
+.field input:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  background: var(--color-surface);
+}
+.field .hint {
+  font-size: 0.78rem;
+  color: var(--color-ink-soft);
+  margin-top: 0.3rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: white;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.btn:hover { background: var(--color-accent-dark); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+}
+.btn-secondary:hover { background: var(--color-bg); border-color: var(--color-ink-soft); }
+
+.alert {
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  margin-bottom: 1.125rem;
+  display: none;
+}
+.alert.show { display: block; }
+.alert-error {
+  background: #FBEAEA;
+  color: var(--color-danger);
+  border: 1px solid #F0CACA;
+}
+.alert-success {
+  background: #E9F3EB;
+  color: var(--color-success);
+  border: 1px solid #C9E3CD;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px dashed var(--color-line);
+  color: var(--color-ink-soft);
+}
+
+/* Profile page specific (moved here from the old inline <style> block) */
+.profile-wrapper { flex: 1; display: flex; justify-content: center; padding: 2.5rem 2rem; }
+.profile-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  height: fit-content;
+}
+.profile-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+.avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--color-accent); color: white;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.profile-header .email { font-size: 0.85rem; color: var(--color-ink-soft); margin-top: 0.15rem; }
+.row { display: flex; gap: 0.85rem; }
+.row .field { flex: 1; }
+.form-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+.topbar-actions { display: flex; align-items: center; gap: 1rem; }
+.logout-link {
+  font-size: 0.875rem; color: var(--color-ink-soft); cursor: pointer;
+  background: none; border: none; font-family: var(--font-body);
+}
+.logout-link:hover { color: var(--color-ink); text-decoration: underline; }
+.skeleton { color: var(--color-ink-soft); font-size: 0.9rem; }
