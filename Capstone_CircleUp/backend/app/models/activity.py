@@ -33,7 +33,10 @@ class Activity(Base):
     max_participants = Column(Integer, nullable=False)
 
     status = Column(
-        Enum(ActivityStatus), nullable=False, default=ActivityStatus.OPEN, index=True
+        Enum(ActivityStatus, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
+        nullable=False,
+        default=ActivityStatus.OPEN,
+        index=True,
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())

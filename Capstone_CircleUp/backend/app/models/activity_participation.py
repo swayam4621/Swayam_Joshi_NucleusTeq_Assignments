@@ -27,7 +27,10 @@ class ParticipationRequest(Base):
     requester_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
 
     status = Column(
-        Enum(ParticipationStatus), nullable=False, default=ParticipationStatus.PENDING, index=True
+        Enum(ParticipationStatus, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
+        nullable=False,
+        default=ParticipationStatus.PENDING,
+        index=True,
     )
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
