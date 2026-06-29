@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your profile — CircleUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a href="profile.html" class="brand"><span class="dot"></span>CircleUp</a>
+      <div class="topbar-actions">
+        <button class="logout-link" id="logout-btn" type="button">Log out</button>
+      </div>
+    </header>
+
+    <main class="profile-wrapper">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="avatar" id="avatar-initial">?</div>
+          <div>
+            <h2 id="display-name">Loading…</h2>
+            <div class="email" id="display-email"></div>
+          </div>
+        </div>
+
+        <div id="alert" class="alert alert-error" role="alert"></div>
+        <div id="success" class="alert alert-success" role="status"></div>
+
+        <p class="skeleton" id="loading-msg">Loading your profile…</p>
+
+        <form id="profile-form" novalidate style="display: none;">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="phone_number">Phone number</label>
+              <input type="tel" id="phone_number" name="phone_number" placeholder="Optional" />
+            </div>
+            <div class="field">
+              <label for="city">City</label>
+              <input type="text" id="city" name="city" placeholder="Optional" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" rows="3" placeholder="Tell people a bit about yourself"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn" id="save-btn">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/profile.js"></script>
+</body>
+</html>

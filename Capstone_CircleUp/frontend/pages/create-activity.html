@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create activity — CircleUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a href="activities.html" class="brand"><span class="dot"></span>CircleUp</a>
+      <nav class="nav-links">
+        <a href="activities.html">Browse</a>
+        <a href="create-activity.html" class="active">Create</a>
+        <a href="my-activities.html">My Activities</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="btn-link" id="logout-btn" type="button">Log out</button>
+      </div>
+    </header>
+
+    <main class="content-wrapper" style="max-width: 640px;">
+      <div class="content-header">
+        <div>
+          <h1>Create an activity</h1>
+          <p class="subtitle">Set the details, and people nearby can ask to join.</p>
+        </div>
+      </div>
+
+      <div id="alert" class="alert alert-error" role="alert"></div>
+
+      <form id="create-form" novalidate>
+        <div class="field">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" required maxlength="200" />
+        </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="3" maxlength="2000" placeholder="Optional — what should people know before joining?"></textarea>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" required maxlength="100" placeholder="e.g. Cricket" />
+          </div>
+          <div class="field">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" required maxlength="200" placeholder="e.g. Indore" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="date">Date &amp; time</label>
+            <input type="datetime-local" id="date" name="date" required />
+            <span class="hint">Must be in the future.</span>
+          </div>
+          <div class="field">
+            <label for="max_participants">Max participants</label>
+            <input type="number" id="max_participants" name="max_participants" required min="1" step="1" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn" id="submit-btn">Create activity</button>
+          <a href="activities.html" class="btn-secondary" style="text-decoration:none; text-align:center;">Cancel</a>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/activity-helpers.js"></script>
+  <script src="../js/create-activity.js"></script>
+</body>
+</html>
