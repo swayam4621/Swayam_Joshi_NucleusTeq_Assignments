@@ -21,8 +21,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(subject: str, expires_minutes: Optional[int] = None) -> str:
     """
-    create a signed JWT.
-    subject is typically the user's id kept generic so it's
+    create a signed JWT
+    subject is typically the user's id kept generic so
     not tied to any particular orm model
     """
     expire_delta = timedelta(
