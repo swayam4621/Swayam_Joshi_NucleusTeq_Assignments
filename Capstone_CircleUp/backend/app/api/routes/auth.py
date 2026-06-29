@@ -37,8 +37,6 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
 def logout(current_user: User = Depends(get_current_user)):
-    # Stateless JWT — nothing to invalidate server-side.
-    # Client discards the token.
     return {"detail": "Logged out. Please discard your access token client-side."}
 
 
