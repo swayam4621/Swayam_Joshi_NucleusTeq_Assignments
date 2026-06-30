@@ -48,6 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("view-date").textContent = formatDateTime(activity.date);
     document.getElementById("view-max").textContent = activity.max_participants;
 
+    document.getElementById("view-approved-count").textContent = activity.approved_count;
+    document.getElementById("view-pending-count").textContent = activity.pending_request_count;
+    document.getElementById("view-request-status").textContent =
+      activity.user_request_status ? activity.user_request_status : "Not requested";
+    document.getElementById("view-contact").textContent =
+      activity.contact_phone || "Visible after approval.";
+
     ownerBannerSlot.innerHTML = isOwner
       ? `<div class="owner-banner">You created this activity.</div>`
       : "";
@@ -58,8 +65,114 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("cancel-activity-btn").style.display =
       isOwner && activity.status !== "cancelled" ? "inline-flex" : "none";
 
+    const requestActions = document.getElementById("request-actions");
+    const joinButton = document.getElementById("join-activity-btn");
+    const statusNote = document.getElementById("request-status-note");
+    const requestPanel = document.getElementById("owner-requests-panel");
+
+    if (isOwner) {
+      requestActions.style.display = "none";
+      requestPanel.style.display = activity.pending_requests.length ? "block" : "none";
+      renderPendingRequests(activity.pending_requests);
+    } else {
+      requestPanel.style.display = "none";
+      statusNote.textContent = "";
+      if (activity.status === "open") {
+        if (!activity.user_request_status) {
+          requestActions.style.display = "flex";
+          joinButton.style.display = "inline-flex";
+          statusNote.textContent = "You can request to join this activity.";
+        } else {
+          requestActions.style.display = "flex";
+          joinButton.style.display = "none";
+          if (activity.user_request_status === "pending") {
+            statusNote.textContent = "Your join request is pending approval.";
+          } else if (activity.user_request_status === "approved") {
+            statusNote.textContent = "You are approved to join this activity.";
+          } else if (activity.user_request_status === "rejected") {
+            statusNote.textContent = "Your request was rejected.";
+          }
+        }
+      } else {
+        requestActions.style.display = "flex";
+        joinButton.style.display = "none";
+        if (activity.status === "full") {
+          statusNote.textContent = "This activity is already full.";
+        } else if (activity.status === "cancelled") {
+          statusNote.textContent = "This activity has been cancelled.";
+        } else if (activity.status === "completed") {
+          statusNote.textContent = "This activity has already completed.";
+        }
+      }
+    }
+
     viewCard.style.display = "block";
     editCard.style.display = "none";
+  }
+
+  function renderPendingRequests(requests) {
+    const list = document.getElementById("pending-requests-list");
+    list.innerHTML = "";
+
+    if (!requests.length) {
+      list.innerHTML = `<p class="empty-state">No requests yet.</p>`;
+      return;
+    }
+
+    requests.forEach((request) => {
+      const requestCard = document.createElement("div");
+      requestCard.className = "request-card";
+      requestCard.innerHTML = `
+        <div class="request-card-top">
+          <div>
+            <strong>${escapeHtml(request.requester_name)}</strong>
+            <div class="request-meta">${formatDateTime(request.created_at)}</div>
+          </div>
+          <span class="status-badge status-${request.status}">${escapeHtml(request.status)}</span>
+        </div>
+        <div class="request-details">
+          <div><strong>Phone</strong>: ${escapeHtml(request.requester_phone || "Not provided")}</div>
+        </div>
+      `;
+
+      if (request.status === "pending") {
+        const actions = document.createElement("div");
+        actions.className = "request-actions";
+        const approveBtn = document.createElement("button");
+        approveBtn.type = "button";
+        approveBtn.className = "btn btn-compact";
+        approveBtn.textContent = "Approve";
+        approveBtn.addEventListener("click", async () => {
+          try {
+            await CircleUpAPI.approveParticipationRequest(request.id);
+            showSuccess("Request approved.");
+            await loadActivity();
+          } catch (err) {
+            showError(err.message);
+          }
+        });
+
+        const rejectBtn = document.createElement("button");
+        rejectBtn.type = "button";
+        rejectBtn.className = "btn-secondary btn-compact";
+        rejectBtn.textContent = "Reject";
+        rejectBtn.addEventListener("click", async () => {
+          try {
+            await CircleUpAPI.rejectParticipationRequest(request.id);
+            showSuccess("Request rejected.");
+            await loadActivity();
+          } catch (err) {
+            showError(err.message);
+          }
+        });
+
+        actions.appendChild(approveBtn);
+        actions.appendChild(rejectBtn);
+        requestCard.appendChild(actions);
+      }
+
+      list.appendChild(requestCard);
+    });
   }
 
   function populateEditForm(activity) {
@@ -175,6 +288,21 @@ document.addEventListener("DOMContentLoaded", () => {
         showError("You can only cancel activities you created.");
       } else {
         showError(err.message);
+      }
+    }
+  });
+
+  document.getElementById("join-activity-btn").addEventListener("click", async () => {
+    hideAlerts();
+    try {
+      await CircleUpAPI.requestParticipation(activityId);
+      showSuccess("Your join request has been sent.");
+      await loadActivity();
+    } catch (err) {
+      if (err.status === 400 || err.status === 403) {
+        showError(err.message);
+      } else {
+        showError("Could not send join request. Please try again.");
       }
     }
   });

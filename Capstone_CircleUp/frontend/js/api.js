@@ -98,6 +98,18 @@ const CircleUpAPI = {
   getActivity(id) {
     return apiRequest(`/activities/${id}`, { method: "GET", auth: true });
   },
+  requestParticipation(activityId) {
+    return apiRequest(`/activities/${activityId}/requests`, { method: "POST" });
+  },
+  listActivityRequests(activityId) {
+    return apiRequest(`/activities/${activityId}/requests`, { method: "GET" });
+  },
+  approveParticipationRequest(requestId) {
+    return apiRequest(`/activities/requests/${requestId}/approve`, { method: "POST" });
+  },
+  rejectParticipationRequest(requestId) {
+    return apiRequest(`/activities/requests/${requestId}/reject`, { method: "POST" });
+  },
   createActivity(payload) {
     return apiRequest("/activities", { method: "POST", body: payload });
   },

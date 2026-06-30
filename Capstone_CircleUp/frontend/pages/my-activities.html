@@ -50,15 +50,27 @@
       </div>
 
       <div id="joined-panel" class="tab-panel" style="display:none;">
-        <div class="notice-banner">
-        show activities you've been approved to join
+        <div id="joined-grid" class="activity-grid" style="display:none;"></div>
+        <div id="joined-empty" class="empty-state" style="display:none;">
+          <h3>No approved activities yet</h3>
+          <p>Request to join activities from the browse page.</p>
         </div>
       </div>
 
       <div id="pending-panel" class="tab-panel" style="display:none;">
-        <div class="notice-banner">
-           requests you're waiting on approval for, and ones you need to approve or reject
-          as an organizer
+        <div class="pending-section">
+          <h2>Your pending join requests</h2>
+          <div id="pending-outgoing-grid" class="activity-grid" style="display:none;"></div>
+          <div id="pending-outgoing-empty" class="empty-state" style="display:none;">
+            <p>You have no pending activity requests.</p>
+          </div>
+        </div>
+        <div class="pending-section" style="margin-top:2rem;">
+          <h2>Requests awaiting your review</h2>
+          <div id="pending-incoming-grid" class="activity-grid" style="display:none;"></div>
+          <div id="pending-incoming-empty" class="empty-state" style="display:none;">
+            <p>No pending requests for your activities.</p>
+          </div>
         </div>
       </div>
     </main>
