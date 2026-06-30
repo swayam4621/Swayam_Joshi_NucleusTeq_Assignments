@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activity details — CircleUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a href="activities.html" class="brand"><span class="dot"></span>CircleUp</a>
+      <nav class="nav-links">
+        <a href="activities.html">Browse</a>
+        <a href="create-activity.html">Create</a>
+        <a href="my-activities.html">My Activities</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="btn-link" id="logout-btn" type="button">Log out</button>
+      </div>
+    </header>
+
+    <main class="content-wrapper">
+      <p><a href="activities.html">&larr; Back to browse</a></p>
+
+      <div id="alert" class="alert alert-error" role="alert" style="max-width:640px;"></div>
+      <div id="success" class="alert alert-success" role="status" style="max-width:640px;"></div>
+
+      <p class="skeleton" id="loading-msg">Loading activity…</p>
+
+      <!-- VIEW MODE -->
+      <div class="detail-card" id="view-card" style="display:none;">
+        <div id="owner-banner-slot"></div>
+
+        <div class="card-top">
+          <h1 id="view-title"></h1>
+          <span id="view-status-badge"></span>
+        </div>
+
+        <p class="description" id="view-description"></p>
+
+        <div class="detail-meta-grid">
+          <div class="meta-item">
+            <span class="label">Category</span>
+            <span class="value" id="view-category"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Location</span>
+            <span class="value" id="view-location"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Date &amp; time</span>
+            <span class="value" id="view-date"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Max participants</span>
+            <span class="value" id="view-max"></span>
+          </div>
+        </div>
+
+        <div class="detail-meta-grid detail-summary">
+          <div class="meta-item">
+            <span class="label">Approved</span>
+            <span class="value" id="view-approved-count"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Pending</span>
+            <span class="value" id="view-pending-count"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Your status</span>
+            <span class="value" id="view-request-status"></span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Organizer contact</span>
+            <span class="value" id="view-contact"></span>
+          </div>
+        </div>
+
+        <div class="detail-actions" id="request-actions" style="display:none; align-items:flex-start; gap:1rem;">
+          <button type="button" class="btn" id="join-activity-btn">Request to join</button>
+          <span class="note" id="request-status-note"></span>
+        </div>
+
+        <div class="detail-card request-panel" id="owner-requests-panel" style="display:none; margin-top:1.5rem;">
+          <h2>Participation requests</h2>
+          <div id="pending-requests-list"></div>
+        </div>
+
+        <div class="detail-actions" id="owner-actions" style="display:none;">
+          <button type="button" class="btn btn-compact" id="edit-btn">Edit activity</button>
+          <button type="button" class="btn-secondary" id="cancel-activity-btn">Cancel activity</button>
+        </div>
+      </div>
+
+      <!-- EDIT MODE -->
+      <div class="detail-card" id="edit-card" style="display:none;">
+        <h2 style="margin-bottom:1.25rem;">Edit activity</h2>
+        <form id="edit-form" novalidate>
+          <div class="field">
+            <label for="edit-title">Title</label>
+            <input type="text" id="edit-title" required maxlength="200" />
+          </div>
+
+          <div class="field">
+            <label for="edit-description">Description</label>
+            <textarea id="edit-description" rows="3" maxlength="2000"></textarea>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="edit-category">Category</label>
+              <input type="text" id="edit-category" required maxlength="100" />
+            </div>
+            <div class="field">
+              <label for="edit-location">Location</label>
+              <input type="text" id="edit-location" required maxlength="200" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="edit-date">Date &amp; time</label>
+              <input type="datetime-local" id="edit-date" required />
+            </div>
+            <div class="field">
+              <label for="edit-max">Max participants</label>
+              <input type="number" id="edit-max" required min="1" step="1" />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn" id="save-edit-btn">Save changes</button>
+            <button type="button" class="btn-secondary" id="cancel-edit-btn">Discard</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- Cancel confirmation modal -->
+  <div class="modal-overlay" id="cancel-modal">
+    <div class="modal-box">
+      <h3>Cancel this activity?</h3>
+      <p>Participants won't be able to join anymore. This can't be undone.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="modal-dismiss-btn">Keep it</button>
+        <button type="button" class="btn" id="modal-confirm-btn">Cancel activity</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/activity-helpers.js"></script>
+  <script src="../js/activity-detail.js"></script>
+</body>
+</html>
