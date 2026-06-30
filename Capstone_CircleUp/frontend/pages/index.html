@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to CircleUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a href="index.html" class="brand"><span class="dot"></span>CircleUp</a>
+      <div class="topbar-actions">
+        <a href="login.html" class="btn btn-secondary">Log In</a>
+        <a href="register.html" class="btn">Sign Up</a>
+      </div>
+    </header>
+
+    <main class="content-wrapper">
+      <div class="content-header">
+        <h1>Find your next favorite activity</h1>
+        <p class="subtitle">Join thousands of people discovering local sports, meetups, and hobbies.</p>
+      </div>
+
+      <div id="alert" class="alert alert-error hidden" role="alert"></div>
+      <p class="skeleton" id="loading-msg">Discovering activities nearby...</p>
+
+      <div id="landing-grid" class="activity-grid hidden"></div>
+      
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/landing.js"></script>
+</body>
+</html>
