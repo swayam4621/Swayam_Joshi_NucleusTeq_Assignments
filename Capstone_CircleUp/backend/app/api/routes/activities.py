@@ -1,8 +1,3 @@
-"""
-create, view detail, browse/filter, edit, cancel.
-Edit/cancel require ownership enforced in activity_service.py, mapped
-to 403 here nd never a 500
-"""
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -19,6 +14,7 @@ from app.schemas.activity import (
     ActivityOut,
     ActivityUpdate,
     RequestSummary,
+    ParticipationRequestCreate
 )
 from app.services.activity_service import (
     ActivityAlreadyCancelledError,
@@ -32,7 +28,6 @@ from app.services.activity_service import (
 )
 from app.services.participation_service import (
     ActivityNotAcceptingRequestsError,
-    DuplicateParticipationRequestError,
     NotParticipationOwnerError,
     ParticipationNotAllowedError,
     ParticipationRequestNotFoundError,
@@ -139,23 +134,23 @@ def get_detail(
 @router.post("/{activity_id}/requests", response_model=RequestSummary, status_code=status.HTTP_201_CREATED)
 def request_participation(
     activity_id: int,
+    payload: ParticipationRequestCreate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     try:
-        request = create_participation_request(db, activity_id, current_user)
+        request = create_participation_request(db, activity_id, current_user, payload.participant_count)
         return {
             "id": request.id,
             "requester_id": request.requester.id,
             "requester_name": request.requester.name,
             "requester_phone": request.requester.phone_number,
             "status": request.status,
+            "participant_count": request.participant_count,
             "created_at": request.created_at,
         }
     except ActivityNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
-    except DuplicateParticipationRequestError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     except ParticipationNotAllowedError as exc:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc))
     except ActivityNotAcceptingRequestsError as exc:
@@ -190,6 +185,7 @@ def approve_participation_request_route(
             "requester_name": request.requester.name,
             "requester_phone": request.requester.phone_number,
             "status": request.status,
+            "participant_count": request.participant_count,
             "created_at": request.created_at,
         }
     except ParticipationRequestNotFoundError as exc:
@@ -216,6 +212,7 @@ def reject_participation_request_route(
             "requester_name": request.requester.name,
             "requester_phone": request.requester.phone_number,
             "status": request.status,
+            "participant_count": request.participant_count,
             "created_at": request.created_at,
         }
     except ParticipationRequestNotFoundError as exc:

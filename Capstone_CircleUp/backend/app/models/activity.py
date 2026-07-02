@@ -1,9 +1,3 @@
-"""
-Activity model.
-Schema defined fully here (spec sections 4 + 7). Business logic (status
-transitions, capacity, ownership) lives in app/services/activity_service.py,
-not here.
-"""
 import enum
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum, func
@@ -11,13 +5,11 @@ from sqlalchemy.orm import relationship
 
 from app.db.session import Base
 
-
 class ActivityStatus(str, enum.Enum):
     OPEN = "open"
     FULL = "full"
     CANCELLED = "cancelled"
     COMPLETED = "completed"
-
 
 class Activity(Base):
     __tablename__ = "activities"
