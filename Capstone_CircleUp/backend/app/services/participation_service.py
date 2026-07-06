@@ -1,13 +1,17 @@
 from __future__ import annotations
 from datetime import datetime, timezone
+import logging
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.activity import Activity, ActivityStatus
 from app.models.activity_participation import ParticipationRequest, ParticipationStatus
 from app.models.user import User
 from app.services.activity_service import ActivityNotFoundError
+
+logger = logging.getLogger("circleup")
 
 
 class ParticipationError(Exception):
@@ -26,6 +30,9 @@ class ParticipationRequestStatusError(ParticipationError):
     pass
 
 class NotParticipationOwnerError(ParticipationError):
+    pass
+
+class DuplicateParticipationRequestError(ParticipationError):
     pass
 
 
@@ -88,13 +95,24 @@ def create_participation_request(db: Session, activity_id: int, requester: User,
 
     _assert_activity_active(activity, requester=requester)
 
+    existing = db.query(ParticipationRequest).filter(
+        ParticipationRequest.activity_id == activity_id,
+        ParticipationRequest.requester_id == requester.id,
+    ).first()
+    if existing is not None:
+        raise DuplicateParticipationRequestError("You've already requested to join this activity.")
+
     request = ParticipationRequest(
         activity_id=activity_id, 
         requester_id=requester.id,
         participant_count=participant_count
     )
     db.add(request)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise DuplicateParticipationRequestError("You've already requested to join this activity.")
     db.refresh(request)
     return request
 
@@ -113,6 +131,10 @@ def approve_participation_request(db: Session, request_id: int, owner: User) -> 
 
     activity = _lock_activity(db, request.activity_id)
     if activity.creator_id != owner.id:
+        logger.warning(
+            "User %s attempted to approve request %s on activity %s they do not own.",
+            owner.id, request_id, activity.id,
+        )
         raise NotParticipationOwnerError("Only the activity creator can approve requests.")
 
     current_status = _normalize_status(activity)
@@ -134,6 +156,10 @@ def approve_participation_request(db: Session, request_id: int, owner: User) -> 
 
     db.commit()
     db.refresh(request)
+    logger.info(
+        "Request %s (requester %s) approved for activity %s by owner %s.",
+        request.id, request.requester_id, activity.id, owner.id,
+    )
     return request
 
 
@@ -146,6 +172,10 @@ def reject_participation_request(db: Session, request_id: int, owner: User) -> P
     if activity is None:
         raise ActivityNotFoundError(f"Activity {request.activity_id} not found.")
     if activity.creator_id != owner.id:
+        logger.warning(
+            "User %s attempted to reject request %s on activity %s they do not own.",
+            owner.id, request_id, activity.id,
+        )
         raise NotParticipationOwnerError("Only the activity creator can reject requests.")
 
     if request.status != ParticipationStatus.PENDING:
@@ -154,6 +184,10 @@ def reject_participation_request(db: Session, request_id: int, owner: User) -> P
     request.status = ParticipationStatus.REJECTED
     db.commit()
     db.refresh(request)
+    logger.info(
+        "Request %s (requester %s) rejected for activity %s by owner %s.",
+        request.id, request.requester_id, activity.id, owner.id,
+    )
     return request
 
 
