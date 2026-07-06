@@ -15,6 +15,27 @@ class ApiError extends Error {
   }
 }
 
+function extractErrorMessage(data) {
+  if (!data || !data.detail) return "Something went wrong. Please try again.";
+  const detail = data.detail;
+
+  if (typeof detail === "string") return detail;
+
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item.msg === "string") {
+          return item.msg.replace(/^Value error,\s*/i, "");
+        }
+        return "Invalid input.";
+      })
+      .join(" ");
+  }
+
+  return "Something went wrong. Please try again.";
+}
+
 async function apiRequest(path, { method = "GET", body = null, auth = true } = {}) {
   const headers = { "Content-Type": "application/json" };
   
@@ -39,8 +60,7 @@ async function apiRequest(path, { method = "GET", body = null, auth = true } = {
   try { data = await response.json(); } catch (_) {}
 
   if (!response.ok) {
-    const message = (data && data.detail) || "Something went wrong. Please try again.";
-    throw new ApiError(message, response.status);
+    throw new ApiError(extractErrorMessage(data), response.status);
   }
 
   return data;
@@ -70,7 +90,7 @@ const CircleUpAPI = {
   getActivity: (id) => apiRequest(`/activities/${id}`, { method: "GET", auth: true }),
   createActivity: (payload) => apiRequest("/activities", { method: "POST", body: payload }),
   updateActivity: (id, payload) => apiRequest(`/activities/${id}`, { method: "PATCH", body: payload }),
-  cancelActivity: (id) => apiRequest(`/activities/${id}/cancel`, { method: "POST" }),
+  cancelActivity: (id) => apiRequest(`/activities/${id}/cancel`, { method: "PATCH", auth: true }),
 
   requestParticipation: (activityId, count) => apiRequest(`/activities/${activityId}/requests`, { method: "POST", body: { participant_count: count } }),
   listActivityRequests: (activityId) => apiRequest(`/activities/${activityId}/requests`, { method: "GET" }),

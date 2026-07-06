@@ -292,3 +292,69 @@ a:hover { text-decoration: underline; }
     flex: 1; 
   }
 }
+/* live validation, password checklist / field hints */
+.field-hint {
+  font-size: 0.8rem;
+  color: var(--color-ink-soft);
+  margin-top: 0.35rem;
+}
+.field-error {
+  font-size: 0.8rem;
+  color: var(--color-danger);
+  margin-top: 0.35rem;
+}
+.requirement-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+}
+.requirement-list li {
+  color: var(--color-ink-soft);
+  margin-bottom: 0.15rem;
+  transition: color 0.15s ease;
+}
+.requirement-list li::before {
+  content: "\2716\0020";
+  color: var(--color-danger);
+}
+.requirement-list li.met {
+  color: var(--color-success);
+}
+.requirement-list li.met::before {
+  content: "\2714\0020";
+  color: var(--color-success);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.status-badge.rejected {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #ffcdd2;
+}
+
+.status-badge.pending {
+    background-color: #fff8e1;
+    color: #f57f17;
+    border: 1px solid #ffecb3;
+}
+
+.status-badge.approved {
+    background-color: #e8f5e9;
+    color: #388e3c;
+    border: 1px solid #c8e6c9;
+}
+
+.status-badge.owner {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+}
