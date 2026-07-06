@@ -159,6 +159,8 @@ a:hover { text-decoration: underline; }
   display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px);
 }
 .modal-box {
+  max-height: 90vh; 
+  overflow-y: auto;
   background: var(--color-surface); padding: 2.5rem; border-radius: var(--radius-lg);
   width: 100%; max-width: 400px; box-shadow: var(--shadow-modal); position: relative;
 }
