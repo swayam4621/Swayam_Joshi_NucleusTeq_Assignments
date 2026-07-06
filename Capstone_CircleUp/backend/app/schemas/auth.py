@@ -6,7 +6,7 @@ class RegisterRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=120)
     email: str = Field(..., pattern=r"^[a-zA-Z0-9_.+-]+@gmail\.com$")
     password: str = Field(..., min_length=8)
-    phone_number: str
+    phone_number: str = Field(..., pattern=r"^\d{10}$", description="Phone number must be exactly 10 digits.")
     city: str = Field(..., pattern="^(Mumbai|Pune|Bangalore|Delhi|Indore|Ahmedabad|Hyderabad|Gurgaon)$")
     bio: Optional[str] = None
 

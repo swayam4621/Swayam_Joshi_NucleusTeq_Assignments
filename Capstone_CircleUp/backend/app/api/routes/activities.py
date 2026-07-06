@@ -28,6 +28,7 @@ from app.services.activity_service import (
 )
 from app.services.participation_service import (
     ActivityNotAcceptingRequestsError,
+    DuplicateParticipationRequestError,
     NotParticipationOwnerError,
     ParticipationNotAllowedError,
     ParticipationRequestNotFoundError,
@@ -77,12 +78,7 @@ def _activity_to_dict(activity: Activity, current_user: User | None, db: Session
 
 def _activity_detail_to_dict(activity: Activity, current_user: User | None, db: Session) -> dict:
     detail = _activity_to_dict(activity, current_user, db)
-    detail["organizer_phone"] = None
-    if current_user is not None:
-        if current_user.id == activity.creator_id:
-            detail["organizer_phone"] = activity.creator.phone_number
-        elif detail["user_request_status"] == ParticipationStatus.APPROVED:
-            detail["organizer_phone"] = activity.creator.phone_number
+    detail["organizer_phone"] = detail.get("contact_phone")
 
     pending_requests = []
     if current_user is not None and current_user.id == activity.creator_id:
@@ -98,8 +94,42 @@ def create(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return create_activity(db, current_user, payload)
+    activity = create_activity(db, current_user, payload)
+    return _activity_to_dict(activity, current_user, db)
 
+@router.patch("/{activity_id}", response_model=ActivityOut)
+def update_activity_route(
+    activity_id: int,
+    payload: ActivityUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        activity = update_activity(db, activity_id, current_user, payload)
+        return _activity_to_dict(activity, current_user, db)
+    except ActivityNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+    except NotActivityOwnerError as exc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc))
+    except ActivityAlreadyCancelledError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@router.patch("/{activity_id}/cancel", response_model=ActivityOut)
+def cancel_activity_route(
+    activity_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        activity = cancel_activity(db, activity_id, current_user)
+        return _activity_to_dict(activity, current_user, db)
+    except ActivityNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+    except NotActivityOwnerError as exc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc))
+    except ActivityAlreadyCancelledError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
 @router.get("", response_model=list[ActivityOut])
 def browse(
@@ -153,6 +183,8 @@ def request_participation(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
     except ParticipationNotAllowedError as exc:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc))
+    except DuplicateParticipationRequestError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc))
     except ActivityNotAcceptingRequestsError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
