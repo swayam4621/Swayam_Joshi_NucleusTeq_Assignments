@@ -54,11 +54,24 @@ def create_activity(db: Session, creator: User, data: ActivityCreate) -> Activit
     return activity
 
 
-def get_activity(db: Session, activity_id: int) -> Activity:
+def get_activity(db: Session, activity_id: int, current_user: User | None = None) -> Activity:
     activity = db.query(Activity).filter(Activity.id == activity_id).first()
     if activity is None:
         raise ActivityNotFoundError(f"Activity {activity_id} not found.")
-    return _apply_lazy_status(activity)
+    
+    activity = _apply_lazy_status(activity)
+    activity.contact_phone = None
+
+    if current_user:
+        if activity.creator_id == current_user.id:
+            activity.contact_phone = activity.creator.phone_number
+        else:
+            from app.services.participation_service import get_user_participation_status, ParticipationStatus
+            status = get_user_participation_status(db, activity.id, current_user)
+            if status == ParticipationStatus.APPROVED:
+                activity.contact_phone = activity.creator.phone_number
+
+    return activity
 
 
 def _get_owned_activity(db: Session, activity_id: int, user: User) -> Activity:
@@ -104,8 +117,8 @@ def list_activities(
     date_from: datetime | None = None,
     date_to: datetime | None = None,
     sort_by_date: str = "asc",
+    current_user: User | None = None,
 ) -> list[Activity]:
-    """Browse/filter activities (spec section 5). Filters combine with AND."""
     query = db.query(Activity)
 
     if category:
@@ -123,4 +136,19 @@ def list_activities(
         query = query.order_by(Activity.date.asc())
 
     activities = query.all()
-    return [_apply_lazy_status(a) for a in activities]
+    
+    from app.services.participation_service import get_user_participation_status, ParticipationStatus
+
+    for activity in activities:
+        _apply_lazy_status(activity)
+        activity.contact_phone = None
+        
+        if current_user:
+            if activity.creator_id == current_user.id:
+                activity.contact_phone = activity.creator.phone_number
+            else:
+                status = get_user_participation_status(db, activity.id, current_user)
+                if status == ParticipationStatus.APPROVED:
+                    activity.contact_phone = activity.creator.phone_number
+
+    return activities
