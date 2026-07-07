@@ -1,0 +1,125 @@
+/* 1. MODAL BACKDROP */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px; 
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/*  MODAL CONTAINERS */
+.modal-box, .auth-wrapper {
+    background-color: #1e1e24 !important; 
+    border-radius: 12px !important; 
+    padding: 30px !important;
+    width: 100%;
+    max-width: 400px !important; 
+    height: auto !important; 
+    max-height: 85vh !important; 
+    overflow-y: auto !important; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.modal-box-lg {
+    background-color: #1e1e24 !important; 
+    border-radius: 12px !important; 
+    padding: 30px !important;
+    width: 100%;
+    max-width: 600px !important; 
+    height: auto !important; 
+    max-height: 85vh !important; 
+    overflow-y: auto !important; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollbar */
+.modal-box::-webkit-scrollbar, .modal-box-lg::-webkit-scrollbar, .auth-wrapper::-webkit-scrollbar { width: 8px; }
+.modal-box::-webkit-scrollbar-thumb, .modal-box-lg::-webkit-scrollbar-thumb, .auth-wrapper::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+/* Forms and content */
+.auth-forms, .auth-wrapper > div, .modal-form {
+    background-color: transparent !important; 
+    box-shadow: none !important; 
+    border: none !important; 
+    padding: 0 !important; 
+}
+
+.auth-forms h2 { font-size: 1.6rem; margin-bottom: 8px; color: var(--text-color); }
+.auth-forms form, .modal-form { display: flex; flex-direction: column; gap: 16px; }
+
+.modal-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.close-modal-btn { position: absolute; top: 18px; right: 18px; background: transparent; border: none; color: #fff !important; font-size: 1.2rem; cursor: pointer; }
+
+/* Details layout */
+.details-box { border: 1px solid var(--border-color); background: var(--surface-bg); }
+.details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.details-label, .details-val { display: block; }
+
+.form-row-sm { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+@media (max-width: 768px) {
+    .auth-wrapper { width: 90vw; max-width: 90vw; padding: 24px; }
+    .auth-wrapper, .form-row, .form-row-sm, .details-grid { flex-direction: column; display: block; gap: 10px; }
+    .auth-branding { display: none; }
+}
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important; 
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/*qr entry pass styling*/
+.qr-modal-content { align-items: center; text-align: center; }
+.entry-pass-title { font-size: 1.5rem; }
+.entry-pass-date { font-weight: 600; color: var(--primary-teal); }
+
+.qr-white-bg {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.qr-img { width: 200px; height: 200px; display: block; }
+.ticket-id-label { text-transform: uppercase; }
+.ticket-id-val { font-weight: bold; }
+
+/* Booking confim  */
+.success-modal-content {
+    text-align: center;
+    padding: 50px 30px !important;
+}
+
+.success-check-icon {
+    color: var(--primary-teal);
+    font-size: 5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(32, 201, 151, 0.4);
+}
+
+.success-title {
+    font-size: 2rem;
+    color: #fff;
+}
+
+.success-event-text {
+    font-size: 1.1rem;
+    color: #b0b0b0;
+}

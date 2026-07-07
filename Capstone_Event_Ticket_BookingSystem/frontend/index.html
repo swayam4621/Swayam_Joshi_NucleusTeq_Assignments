@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvenTix - Live Events, Concerts & More</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/modals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar sticky-nav">
+        <div class="logo">EvenTix</div>
+
+        <div id="nav-logged-out" class="nav-links">
+            <button type="button" class="text-btn text-white" id="nav-login-btn">Log In</button>
+            <button type="button" class="nav-btn-outline" id="nav-signup-btn">Sign Up</button>
+        </div>
+
+        <div id="nav-logged-in" class="nav-links hidden">
+            <span id="user-greeting" class="user-greeting-text"></span>
+            <a href="index.html" class="nav-link-item">Browse</a>
+            <a href="my-bookings.html" class="nav-link-item">My Tickets</a>
+            <button type="button" class="nav-btn-outline" id="nav-logout-btn">Log Out</button>
+        </div>
+    </nav>
+
+    <!-- Top moving event carousel -->
+    <section class="hero-carousel-container">
+        <div id="hero-carousel" class="hero-carousel"></div>
+        <div id="carousel-dots" class="carousel-dots"></div>
+    </section>
+
+    <!-- Main pg content -->
+    <main class="customer-main-container pt-20">
+        <div class="search-bar mt-20 mb-30">
+            <input type="text" id="search-input" placeholder="Search events by name or venue...">
+            <button class="search-btn" id="search-trigger-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+
+        <!-- Artists near you icons-->
+        <h3 id="artists-heading" class="section-heading mt-30">Artists near you</h3>
+        <div id="dynamic-artists-container" class="scroll-container artist-scroll"></div>
+
+        <!-- All events filter buttons today,tmrw,weekend etc -->
+        <h3 class="section-heading mt-30">All events</h3>
+        <div class="scroll-container filter-scroll mb-20">
+            <button class="filter-btn active-filter" data-type="timeframe" data-value="All">All</button>
+            <button class="filter-btn" data-type="timeframe" data-value="Today">Today</button>
+            <button class="filter-btn" data-type="timeframe" data-value="Tomorrow">Tomorrow</button>
+            <button class="filter-btn" data-type="timeframe" data-value="This Weekend">This Weekend</button>
+
+            <span style="border-left: 1px solid #444; margin: 0 5px;"></span> <button class="filter-btn"
+                data-type="category" data-value="Music">Music</button>
+            <button class="filter-btn" data-type="category" data-value="Comedy">Comedy</button>
+            <button class="filter-btn" data-type="category" data-value="Sports">Sports</button>
+            <button class="filter-btn" data-type="category" data-value="Nightlife">Nightlife</button>
+            <button class="filter-btn" data-type="category" data-value="Performances">Performances</button>
+        </div>
+
+        <div id="public-events-grid" class="district-grid">
+            <p id="loading-msg" class="status-message">Loading amazing events...</p>
+        </div>
+    </main>
+
+    <!-- Event card template -->
+    <template id="public-event-card-template">
+        <div class="district-card">
+            <img class="card-img" src="https://images.unsplash.com/photo-1540039155732-6847350357a0?w=600"
+                alt="Event Cover">
+            <div class="card-body">
+                <p class="card-date date-text"></p>
+                <h3 class="card-title"></h3>
+                <p class="card-venue venue-text"></p>
+                <p class="card-price price-text">₹<span></span> onwards</p>
+                <button type="button" class="btn primary-btn mt-10 w-100 book-tickets-btn">Book Tickets</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Carousel slide template -->
+    <template id="hero-slide-template">
+        <div class="hero-slide">
+            <div class="slide-overlay">
+                <h1 class="slide-title"></h1>
+                <p class="slide-subtitle"></p>
+            </div>
+        </div>
+    </template>
+
+    <!-- Artist item template -->
+    <template id="artist-item-template">
+        <div class="artist-item">
+            <img class="artist-img" src="" alt="">
+            <p class="artist-name"></p>
+        </div>
+    </template>
+
+    <!-- Login form-->
+    <div id="login-modal" class="modal-backdrop hidden">
+        <div class="auth-wrapper relative modal-box">
+            <button class="close-modal-btn" onclick="closeAuthModals()">✕</button>
+            <div class="auth-forms full-width-form">
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Log in to book tickets and manage events.</p>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <div id="login-error" class="error-msg hidden"></div>
+                    <button type="submit" class="btn primary-btn">Log In</button>
+                    <p class="switch-form">Don't have an account? <button type="button" class="text-btn"
+                            onclick="openSignupModal()">Sign up</button></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup form  -->
+    <div id="signup-modal" class="modal-backdrop hidden">
+        <div class="auth-wrapper relative modal-box">
+            <button class="close-modal-btn" onclick="closeAuthModals()">✕</button>
+            <div class="auth-forms full-width-form">
+                <h2>Create Account</h2>
+                <p class="subtitle">Join EvenTix today.</p>
+                <form id="signup-form">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signup-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="signup-phone" placeholder="Must be 10 digits" maxlength="10" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="signup-email" placeholder="Must end with @gmail.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="signup-password"
+                            placeholder="Atleast 8 characters, one uppercase and a special character" maxlength="12" required>
+                    </div>
+                    <div class="input-group">
+                        <label>I am a...</label>
+                        <select id="signup-role">
+                            <option value="CUSTOMER">Customer (Buying Tickets)</option>
+                            <option value="ORGANIZER">Organizer (Hosting Events)</option>
+                        </select>
+                    </div>
+                    <div id="signup-error" class="error-msg hidden"></div>
+                    <div id="signup-success" class="success-msg hidden"></div>
+                    <button type="submit" class="btn primary-btn">Sign Up</button>
+                    <p class="switch-form">Already have an account? <button type="button" class="text-btn"
+                            onclick="openLoginModal()">Log in</button></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login successful toast container -->
+    <div id="toast-container" class="toast-hidden">
+        <div id="toast-message"></div>
+    </div>
+    <script src="js/index.js?v=999"></script>
+</body>
+
+</html>

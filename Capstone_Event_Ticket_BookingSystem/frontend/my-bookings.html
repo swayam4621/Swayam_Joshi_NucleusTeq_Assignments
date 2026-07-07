@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvenTix - My Tickets</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/modals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">EvenTix</div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link-item">Home</a>
+            <span id="user-display-name" class="user-greeting-text"></span>
+            <button class="nav-btn-outline" id="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main pg content -->
+    <div class="customer-main-container">
+        <h2 class="section-heading my-tickets-heading">My Tickets</h2>
+        <p class="hero-subtext mb-30">View your purchased tickets and entry QR codes.</p>
+
+        <!-- Tabs buttons upcoming, past and cancelled -->
+        <div class="modal-header-flex mb-20"
+            style="align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px;">
+            <div class="scroll-container mb-0" style="padding-bottom: 0;">
+                <button class="filter-btn active-filter tab-btn" data-status="UPCOMING">Upcoming & Confirmed</button>
+                <button class="filter-btn tab-btn" data-status="PAST">Past Events</button>
+                <button class="filter-btn tab-btn" data-status="CANCELLED">Cancelled Tickets</button>
+            </div>
+
+            <!-- Sort by date -->
+            <div>
+                <select id="sort-date-select" class="input-group"
+                    style="margin-bottom: 0; padding: 8px 15px; border-radius: 20px; background: #222; color: white; border: 1px solid #444;">
+                    <option value="asc">Date: Upcoming First</option>
+                    <option value="desc">Date: Furthest First</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="bookings-grid" class="events-grid">
+        </div>
+
+        <div id="no-bookings-msg" class="empty-msg hidden">
+            <i class="fa-solid fa-ticket no-bookings-icon"></i>
+            <p>You haven't booked any tickets yet.</p>
+        </div>
+    </div>
+
+    <!-- QR code box -->
+    <div id="qr-modal" class="modal-backdrop hidden">
+        <div class="modal-box qr-modal-content">
+            <button class="close-modal-btn" id="close-qr-btn">✕</button>
+
+            <h2 class="modal-title-m0 mb-10 entry-pass-title" id="qr-event-name">Entry Pass</h2>
+            <p class="details-desc mb-20 entry-pass-date" id="qr-event-date"></p>
+
+            <div class="qr-white-bg">
+                <img id="qr-code-img" src="" alt="Ticket QR Code" class="qr-img">
+            </div>
+
+            <p class="details-label mb-10 ticket-id-label">Ticket ID: <span id="qr-ticket-id"
+                    class="text-teal ticket-id-val"></span></p>
+            <p class="details-desc mb-0" id="qr-ticket-qty"></p>
+        </div>
+    </div>
+
+    <!-- Booking card template -->
+    <template id="booking-card-template">
+        <div class="event-card">
+            <div class="card-header">
+                <h3 class="card-title booking-event-name">Event name</h3>
+                <span class="booking-status-badge"></span>
+            </div>
+            <p class="card-text-sm date-text mb-10"><i class="fa-solid fa-calendar text-teal"></i> <span
+                    class="booking-date-val"></span></p>
+            <p class="card-text price-text mb-10"><i class="fa-solid fa-ticket text-teal"></i> <span
+                    class="booking-qty-val"></span> Ticket(s)</p>
+            <p class="card-text seats-text mb-20"><i class="fa-solid fa-credit-card text-teal"></i> ₹<span
+                    class="booking-price-val"></span> Paid</p>
+            <div class="btn-group-row mt-auto">
+                <button class="btn btn-cancel btn-cancel-booking" style="flex: 1;">
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </button>
+                <button class="btn primary-btn mt-auto btn-view-qr">
+                    <i class="fa-solid fa-qrcode"></i> View Entry Ticket
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <script src="js/my-bookings.js"></script>
+</body>
+
+</html>
