@@ -13,7 +13,11 @@ class EmailAlreadyRegisteredError(Exception):
     pass
 
 
-class InvalidCredentialsError(Exception):
+class UserNotFoundError(Exception):
+    pass
+
+
+class IncorrectPasswordError(Exception):
     pass
 
 
@@ -38,9 +42,12 @@ def register_user(db: Session, data: RegisterRequest) -> User:
 
 def authenticate_user(db: Session, email: str, password: str) -> User:
     user = db.query(User).filter(User.email == email).first()
-    if user is None or not verify_password(password, user.hashed_password):
-        logger.warning("Failed login attempt for email: %s", email)
-        raise InvalidCredentialsError("Incorrect email or password.")
+    if user is None:
+        logger.warning("Failed login attempt - no account for email: %s", email)
+        raise UserNotFoundError("No account found with this email.")
+    if not verify_password(password, user.hashed_password):
+        logger.warning("Failed login attempt - wrong password for email: %s", email)
+        raise IncorrectPasswordError("Incorrect password.")
     return user
 
 
