@@ -3,11 +3,13 @@ from datetime import timezone
 import pytest
 from pydantic import ValidationError
 
+from Capstone_CircleUp.backend.app.services.auth_service import IncorrectPasswordError
 from app.core.security import decode_access_token, verify_password
 from app.schemas.auth import RegisterRequest
 from app.services.auth_service import (
     EmailAlreadyRegisteredError,
-    InvalidCredentialsError,
+    IncorrectPasswordError,
+    UserNotFoundError,
     authenticate_user,
     create_token_for_user,
     register_user,
@@ -41,16 +43,14 @@ def test_register_user_raises_for_duplicate_email(db_session, valid_payload):
         register_user(db_session, valid_payload)
 
 
-def test_authenticate_user_raises_for_wrong_password(db_session, valid_payload):
-    register_user(db_session, valid_payload)
+def test_authenticate_user_raises_user_not_found_for_unknown_email(db_session):
+    with pytest.raises(UserNotFoundError):
+        authenticate_user(db_session, "doesnotexist@gmail.com", "SomePassword123!")
 
-    with pytest.raises(InvalidCredentialsError):
-        authenticate_user(db_session, valid_payload.email, "WrongPass123!")
-
-
-def test_authenticate_user_raises_for_unknown_email(db_session, valid_payload):
-    with pytest.raises(InvalidCredentialsError):
-        authenticate_user(db_session, valid_payload.email, valid_payload.password)
+def test_authenticate_user_raises_incorrect_password_for_wrong_password(db_session, make_user):
+    make_user(email="realuser@gmail.com", hashed_password=hash_password("CorrectPass123!"))
+    with pytest.raises(IncorrectPasswordError):
+        authenticate_user(db_session, "realuser@gmail.com", "WrongPassword123!")
 
 
 def test_authenticate_user_returns_user_for_valid_credentials(db_session, valid_payload):
