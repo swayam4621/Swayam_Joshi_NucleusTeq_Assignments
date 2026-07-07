@@ -1,0 +1,6 @@
+**/.vscode/
+Capstone_CircleUp/backend/app/__pycache__/__init__.cpython-313.pyc
+**/__pycache__/**/*
+**/.env/**/*
+Capstone_CircleUp/backend/.env
+Capstone_Event_Ticket_BookingSystem/backend/eventservice/target/classes/application.properties
