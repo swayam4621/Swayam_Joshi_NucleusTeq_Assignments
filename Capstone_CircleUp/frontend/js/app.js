@@ -181,6 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
     const phoneRegex = /^\d{10}$/;
     
+    if (name.length < 3) {
+    return showMessage("Name must be at least 3 characters long.", true, alertBox);
+    }
     if (!emailRegex.test(email)) {
       return showMessage("Email must be a @gmail.com address.", true, alertBox);
     }
@@ -285,6 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setupTitleLiveHint("create-title", "create-title-hint");
   setupTitleLiveHint("edit-title", "edit-title-hint");
+  setupTitleLiveHint("register-name", "register-name-hint");
 
   function setupMaxParticipantsLiveHint(inputId, hintId) {
   const input = document.getElementById(inputId);
@@ -544,7 +548,7 @@ setupMaxParticipantsLiveHint("edit-max", "edit-max-hint");
 
     try {
       const rawActivities = await CircleUpAPI.listActivities(appliedFilters);
-      const activities = rawActivities.filter(act => act.status.toUpperCase() !== "CANCELLED");
+      const activities = rawActivities.filter(act => act.status.toUpperCase() === "OPEN");
       
       if (activities.length === 0) {
         grid.innerHTML = "<p>No activities found matching your criteria.</p>";
@@ -602,6 +606,7 @@ setupMaxParticipantsLiveHint("edit-max", "edit-max-hint");
     const gridCreated = document.getElementById("grid-created");
     const gridJoined = document.getElementById("grid-joined");
     const gridPending = document.getElementById("grid-pending");
+    const gridRejected = document.getElementById("grid-rejected");
     const loader = document.getElementById("my-activities-loading");
     
     gridCreated.replaceChildren(); gridJoined.replaceChildren(); gridPending.replaceChildren();
@@ -613,6 +618,8 @@ setupMaxParticipantsLiveHint("edit-max", "edit-max-hint");
       const created = activities.filter(a => a.creator_id === currentUser?.id);
       const joined = activities.filter(a => a.creator_id !== currentUser?.id && String(a.user_request_status).toLowerCase() === "approved");
       const pending = activities.filter(a => a.creator_id !== currentUser?.id && String(a.user_request_status).toLowerCase() === "pending");
+      const rejected = activities.filter(a => a.creator_id !== currentUser?.id && String(a.user_request_status).toLowerCase() === "rejected");
+
 
       const buildGrid = (gridEl, items, context) => {
         if(items.length === 0) {
@@ -625,7 +632,7 @@ setupMaxParticipantsLiveHint("edit-max", "edit-max-hint");
       buildGrid(gridCreated, created, "created");
       buildGrid(gridJoined, joined, "joined");
       buildGrid(gridPending, pending, "pending");
-
+      buildGrid(gridRejected, rejected, "rejected");
     } catch (err) {
       console.error("Error inside loadMyActivities:", err);
       showMessage("Could not load your activities", true);

@@ -3,12 +3,19 @@ from typing import Optional
 import re
 
 class RegisterRequest(BaseModel):
-    name: str = Field(..., min_length=1, max_length=120)
+    name: str = Field(..., max_length=120)
     email: str = Field(..., pattern=r"^[a-zA-Z0-9_.+-]+@gmail\.com$")
     password: str = Field(..., min_length=8)
     phone_number: str = Field(..., pattern=r"^\d{10}$", description="Phone number must be exactly 10 digits.")
     city: str = Field(..., pattern="^(Mumbai|Pune|Bangalore|Delhi|Indore|Ahmedabad|Hyderabad|Gurgaon)$")
     bio: Optional[str] = None
+
+    @field_validator('name')
+    @classmethod
+    def validate_name_length(cls, v: str) -> str:
+        if len(v.strip()) < 3:
+            raise ValueError('Name must be at least 3 characters long.')
+        return v.strip()
 
     @field_validator('password')
     @classmethod
