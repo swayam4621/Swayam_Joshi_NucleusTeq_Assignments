@@ -34,14 +34,20 @@ export function createEventCard(act, context) {
   const meta = document.createElement("div"); 
   meta.className = "event-meta";
   
-  const loc = document.createElement("span"); 
-  loc.textContent = ` ${act.location}`;
+  const loc = document.createElement("span");
+  const locIcon = document.createElement("i");
+  locIcon.className = "fa-solid fa-location-dot";
+  loc.append(locIcon, ` ${act.location}`);
   
-  const date = document.createElement("span"); 
-  date.textContent = ` ${formatDateTime(act.date)}`;
+  const date = document.createElement("span");
+  const dateIcon = document.createElement("i");
+  dateIcon.className = "fa-regular fa-calendar";
+  date.append(dateIcon, ` ${formatDateTime(act.date)}`);
   
   const capacity = document.createElement("span");
-  capacity.textContent = ` ${act.approved_count || 0} / ${act.max_participants}`;
+  const capIcon = document.createElement("i");
+  capIcon.className = "fa-solid fa-user-group";
+  capacity.append(capIcon, ` ${act.approved_count || 0} / ${act.max_participants}`);
   
   meta.append(loc, date, capacity);
 
@@ -97,7 +103,7 @@ export function createEventCard(act, context) {
     const reqStatus = act.user_request_status ? act.user_request_status.toLowerCase() : null;
     if (reqStatus) {
       const statusBadge = document.createElement("span");
-      statusBadge.className = `status-badge ${reqStatus} right-margin`; // Added margin class
+      statusBadge.className = `status-badge ${reqStatus} right-margin`;
       
       if (reqStatus === 'rejected') statusBadge.textContent = "Request Denied";
       else if (reqStatus === 'approved') statusBadge.textContent = "Joined";
@@ -193,6 +199,7 @@ export function initActivities() {
 
     if (title.length < 3) return showMessage("Title must be at least 3 characters.", true);
     if (!category) return showMessage("Please choose or enter a category.", true);
+    if (!location) return showMessage("Please select a location.", true);
     if (!Number.isInteger(maxPart) || maxPart < 1) {
       const hint = document.getElementById("create-max-hint");
       hint.textContent = "Must be a whole number greater than 0.";

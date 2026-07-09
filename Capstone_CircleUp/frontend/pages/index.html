@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CircleUp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/components.css" />
   <link rel="stylesheet" href="../css/modals.css" />
 </head>
+
 <body>
   <div class="page">
-    
+
     <!-- Navbar -->
     <header class="topbar">
       <div class="topbar-container">
         <a href="#" class="brand" id="nav-brand"><span class="dot"></span>CircleUp</a>
-        
+
         <!-- logged in navigation hidden w/o login -->
         <nav class="nav-links hidden" id="nav-logged-in">
           <button class="nav-btn active" data-target="view-browse">Browse</button>
@@ -95,22 +99,26 @@
           <p class="subtitle">Set the details, and people nearby can ask to join.</p>
         </div>
         <form id="create-form" class="standard-form" novalidate>
+          
           <div class="field">
-            <label>Title</label>
+            <label>Title <span class="text-danger">*</span></label>
             <input type="text" id="create-title" required minlength="3" />
             <p class="field-hint" id="create-title-hint">At least 3 characters.</p>
           </div>
+          
           <div class="field">
             <label>Description <span class="text-muted">(optional)</span></label>
             <textarea id="create-description" rows="3"></textarea>
           </div>
+          
           <div class="field">
-            <label>Category</label>
+            <label>Category <span class="text-danger">*</span></label>
             <select id="create-category" required></select>
             <input type="text" id="create-category-other" class="hidden mt-05" placeholder="Enter a category"/>
           </div>
+          
           <div class="field">
-            <label>Location</label>
+            <label>Location <span class="text-danger">*</span></label>
             <select id="create-location" required>
               <option value="" disabled selected>Select a city</option>
               <option value="Mumbai">Mumbai</option>
@@ -123,12 +131,18 @@
               <option value="Gurgaon">Gurgaon</option>
             </select>
           </div>
-          <div class="field"><label>Date & time</label><input type="datetime-local" id="create-date" required /></div>
+          
           <div class="field">
-            <label>Max participants</label>
+            <label>Date & time <span class="text-danger">*</span></label>
+            <input type="datetime-local" id="create-date" required />
+          </div>
+          
+          <div class="field">
+            <label>Max participants <span class="text-danger">*</span></label>
             <input type="number" id="create-max" required min="1" /> 
             <p class="field-hint" id="create-max-hint">Must be at least 1.</p>
           </div>
+          
           <button type="submit" class="btn" id="btn-submit-create">Create Activity</button>
         </form>
       </section>
@@ -145,7 +159,7 @@
           <button class="tab-btn" data-tab="rejected">Rejected</button>
         </div>
         <p class="skeleton hidden" id="my-activities-loading">Loading your activities...</p>
-        
+
         <div id="tab-created" class="tab-panel">
           <div id="grid-created" class="activity-grid"></div>
         </div>
@@ -166,11 +180,22 @@
           <h1>Your Profile</h1>
         </div>
         <form id="profile-form" class="standard-form" novalidate>
-          <div class="field"><label>Name</label><input type="text" id="profile-name" required /></div>
-          <div class="field"><label>Phone Number</label><input type="tel" id="profile-phone" required pattern="\d{10}" maxlength="10" title="Phone number must be exactly 10 digits"/></div>
+          
           <div class="field">
-            <label>City</label>
-            <select id="profile-city">
+            <label>Name <span class="text-danger">*</span></label>
+            <input type="text" id="profile-name" required minlength="3" />
+            <p class="field-hint" id="profile-name-hint">At least 3 characters.</p>
+          </div>
+          
+          <div class="field">
+            <label>Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" id="profile-phone" required pattern="\d{10}" maxlength="10" title="Phone number must be exactly 10 digits"/>
+            <p class="field-hint" id="profile-phone-hint">Must be exactly 10 digits.</p>
+          </div>
+          
+          <div class="field">
+            <label>City <span class="text-danger">*</span></label>
+            <select id="profile-city" required>
               <option value="" disabled selected>Select your city</option>
               <option value="Mumbai">Mumbai</option>
               <option value="Pune">Pune</option>
@@ -182,7 +207,12 @@
               <option value="Gurgaon">Gurgaon</option>
             </select>
           </div>
-          <div class="field"><label>Bio</label><textarea id="profile-bio" rows="3"></textarea></div>
+          
+          <div class="field">
+            <label>Bio <span class="text-muted">(optional)</span></label>
+            <textarea id="profile-bio" rows="3"></textarea>
+          </div>
+          
           <button type="submit" class="btn" id="btn-submit-profile">Save Changes</button>
         </form>
       </section>
@@ -192,7 +222,7 @@
 
   <!-- Modals overlay -->
   <div id="modal-overlay" class="modal-overlay hidden">
-    
+
     <!-- Login modal -->
     <div id="modal-login" class="modal-box hidden">
       <button class="modal-close">&times;</button>
@@ -203,7 +233,8 @@
         <div class="field"><label>Password</label><input type="password" id="login-password" required /></div>
         <button type="submit" class="btn" id="btn-submit-login">Log In</button>
       </form>
-      <p class="text-muted text-center mt-1">New to CircleUp? <a href="#" id="link-to-register">Create an account</a></p>
+      <p class="text-muted text-center mt-1">New to CircleUp? <a href="#" id="link-to-register">Create an account</a>
+      </p>
     </div>
 
     <!-- register modal -->
@@ -212,22 +243,24 @@
       <h2>Sign Up</h2>
       <div id="register-alert" class="alert hidden"></div>
       <form id="register-form" novalidate>
-        
+
         <div class="field">
           <label>Name <span class="text-danger">*</span></label>
-          <input type="text" id="register-name" required minlength="3"/> 
+          <input type="text" id="register-name" required minlength="3" />
           <p class="field-hint" id="register-name-hint">At least 3 characters.</p>
         </div>
-        
+
         <div class="field">
           <label>Email <span class="text-danger">*</span></label>
-          <input type="email" id="register-email" required pattern='[a-zA-Z0-9_.+-]+@gmail\.com' title="Email must end with @gmail.com" />
+          <input type="email" id="register-email" required pattern='[a-zA-Z0-9_.+-]+@gmail\.com'
+            title="Email must end with @gmail.com" />
           <p class="field-hint">Email must end with @gmail.com.</p>
         </div>
-        
+
         <div class="field">
           <label>Password <span class="text-danger">*</span></label>
-          <input type="password" id="register-password" required pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}" title="Must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one special character."/>
+          <input type="password" id="register-password" required pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}"
+            title="Must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one special character." />
           <ul class="requirement-list" id="password-requirements">
             <li data-rule="length">At least 8 characters</li>
             <li data-rule="upper">One uppercase letter</li>
@@ -235,13 +268,14 @@
             <li data-rule="special">One special character</li>
           </ul>
         </div>
-        
+
         <div class="field">
           <label>Phone Number <span class="text-danger">*</span></label>
-          <input type="tel" id="register-phone" required pattern="\d{10}" maxlength="10" title="Phone number must be exactly 10 digits" />
+          <input type="tel" id="register-phone" required pattern="\d{10}" maxlength="10"
+            title="Phone number must be exactly 10 digits" />
           <p class="field-hint">Phone number must be exactly 10 digits.</p>
         </div>
-        
+
         <div class="field">
           <label>City <span class="text-danger">*</span></label>
           <select id="register-city" required>
@@ -256,37 +290,44 @@
             <option value="Gurgaon">Gurgaon</option>
           </select>
         </div>
-        
+
         <div class="field">
           <label>Bio <span class="text-muted">(optional)</span></label>
           <textarea id="register-bio" rows="2"></textarea>
         </div>
-        
+
         <button type="submit" class="btn" id="btn-submit-register">Sign Up</button>
       </form>
       <p class="text-muted text-center mt-1">Already have an account? <a href="#" id="link-to-login">Log In</a></p>
     </div>
 
     <!-- edit activity modal -->
-    <div id="modal-edit" class="modal-box hidden">
+    <div id="modal-edit" class="modal-box modal-scrollable hidden">
       <button class="modal-close">&times;</button>
       <h2>Update Activity</h2>
       <div id="edit-alert" class="alert hidden"></div>
       <form id="edit-form" novalidate>
         <input type="hidden" id="edit-id" />
+        
         <div class="field">
-          <label>Title</label>
+          <label>Title <span class="text-danger">*</span></label>
           <input type="text" id="edit-title" required minlength="3" />
           <p class="field-hint" id="edit-title-hint">At least 3 characters.</p>
         </div>
-        <div class="field"><label>Description <span class="text-muted">(optional)</span></label><textarea id="edit-description" rows="3"></textarea></div>
+        
         <div class="field">
-          <label>Category</label>
+          <label>Description <span class="text-muted">(optional)</span></label>
+          <textarea id="edit-description" rows="3"></textarea>
+        </div>
+        
+        <div class="field">
+          <label>Category <span class="text-danger">*</span></label>
           <select id="edit-category" required></select>
           <input type="text" id="edit-category-other" class="hidden mt-05" placeholder="Enter a category"/>
         </div>
+        
         <div class="field">
-          <label>Location</label>
+          <label>Location <span class="text-danger">*</span></label>
           <select id="edit-location" required>
             <option value="" disabled selected>Select a city</option>
             <option value="Mumbai">Mumbai</option>
@@ -299,12 +340,18 @@
             <option value="Gurgaon">Gurgaon</option>
           </select>
         </div>
-        <div class="field"><label>Date & time</label><input type="datetime-local" id="edit-date" required /></div>
+        
         <div class="field">
-          <label>Max participants</label>
+          <label>Date & time <span class="text-danger">*</span></label>
+          <input type="datetime-local" id="edit-date" required />
+        </div>
+        
+        <div class="field">
+          <label>Max participants <span class="text-danger">*</span></label>
           <input type="number" id="edit-max" required min="1" />
           <p class="field-hint" id="edit-max-hint">Must be at least 1.</p>
         </div>
+        
         <button type="submit" class="btn" id="btn-submit-edit">Save Changes</button>
       </form>
     </div>
@@ -314,7 +361,7 @@
       <button class="modal-close">&times;</button>
       <h2>Manage Requests</h2>
       <div id="requests-alert" class="alert hidden"></div>
-      
+
       <div id="requests-list" class="activity-grid mb-1-5 mt-1"></div>
 
       <hr class="divider" />
@@ -327,10 +374,10 @@
       <button class="modal-close">&times;</button>
       <h2 id="detail-title" class="mb-05"></h2>
       <span id="detail-badge"></span>
-      
+
       <div class="event-meta mt-1" id="detail-meta"></div>
       <p id="detail-desc" class="detail-desc-box mt-1"></p>
-      
+
       <div id="activity-contact-info" class="alert alert-success hidden mt-1">
         <strong>Organizer Contact:</strong> <span id="detail-contact-phone"></span>
       </div>
@@ -345,7 +392,7 @@
         <button id="btn-submit-join" class="btn">Send Request</button>
         <div id="join-alert" class="alert hidden mt-1"></div>
       </div>
-      
+
       <div id="detail-status-message" class="mt-1 text-center font-bold hidden"></div>
     </div>
 
@@ -353,4 +400,5 @@
 
   <script type="module" src="../js/app.js"></script>
 </body>
+
 </html>

@@ -3,7 +3,8 @@ import {
   getMinDateTime, 
   setupCategoryToggle, 
   setupTitleLiveHint, 
-  setupMaxParticipantsLiveHint 
+  setupMaxParticipantsLiveHint,
+  setupPhoneLiveHint 
 } from "./modules/dom-utils.js";
 import { initNavigation } from "./modules/navigation.js";
 import { initAuth, checkAuthStatus } from "./modules/auth.js";
@@ -25,6 +26,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupTitleLiveHint("create-title", "create-title-hint");
   setupTitleLiveHint("edit-title", "edit-title-hint");
   setupTitleLiveHint("register-name", "register-name-hint");
+  setupTitleLiveHint("profile-name", "profile-name-hint");
+  setupPhoneLiveHint("profile-phone", "profile-phone-hint");
   
   setupMaxParticipantsLiveHint("create-max", "create-max-hint");
   setupMaxParticipantsLiveHint("edit-max", "edit-max-hint");

@@ -1,5 +1,7 @@
 import { CATEGORIES, state } from "./state.js";
 
+let messageTimeout = null;
+
 export function populateCategorySelect(selectEl, { includeAllOption = false } = {}) {
   selectEl.innerHTML = "";
   if (includeAllOption) {
@@ -27,7 +29,12 @@ export function showMessage(msg, isError = true, targetElement = document.getEle
   targetElement.textContent = msg;
   targetElement.className = `alert ${isError ? "alert-error" : "alert-success"}`;
   targetElement.classList.remove("hidden");
-  if (!isError) setTimeout(() => targetElement.classList.add("hidden"), 4000);
+  if (messageTimeout) {
+    clearTimeout(messageTimeout);
+  }  
+  messageTimeout = setTimeout(() => {
+    targetElement.classList.add("hidden");
+  }, 4000);
 }
 
 export function openModal(modalEl) {
@@ -141,6 +148,27 @@ export function setupMaxParticipantsLiveHint(inputId, hintId) {
       hint.className = "field-hint";
     } else if (!Number.isInteger(n) || n < 1) {
       hint.textContent = "Must be a whole number greater than 0.";
+      hint.className = "field-error";
+    } else {
+      hint.textContent = "Looks good.";
+      hint.className = "field-hint";
+    }
+  });
+}
+
+// live exactly 10 digits hint for phone fields
+export function setupPhoneLiveHint(inputId, hintId) {
+  const input = document.getElementById(inputId);
+  const hint = document.getElementById(hintId);
+  if (!input || !hint) return;
+
+  input.addEventListener("input", () => {
+    const val = input.value.trim();
+    if (val.length === 0) {
+      hint.textContent = "Must be exactly 10 digits.";
+      hint.className = "field-hint";
+    } else if (!/^\d{10}$/.test(val)) {
+      hint.textContent = "Must be exactly 10 digits.";
       hint.className = "field-error";
     } else {
       hint.textContent = "Looks good.";
