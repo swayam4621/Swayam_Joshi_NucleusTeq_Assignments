@@ -39,7 +39,7 @@ export function showMessage(msg, isError = true, targetElement = document.getEle
 
 export function openModal(modalEl) {
   document.querySelectorAll(".modal-box").forEach((m) => m.classList.add("hidden"));
-  document.querySelectorAll(".alert").forEach((a) => a.classList.add("hidden"));
+  document.querySelectorAll(".alert:not(#activity-contact-info)").forEach((a) => a.classList.add("hidden"));
   document.getElementById("modal-overlay").classList.remove("hidden");
   modalEl.classList.remove("hidden");
 }
