@@ -154,9 +154,11 @@ export async function loadMyActivities() {
 export async function openRequestsModal(act) {
   const list = document.getElementById("requests-list");
   const appList = document.getElementById("approved-list");
+  const rejList = document.getElementById("rejected-list"); 
 
   list.replaceChildren();
   appList.replaceChildren();
+  rejList.replaceChildren(); 
 
   const loadingText = document.createElement("p");
   loadingText.textContent = "Loading requests...";
@@ -168,6 +170,7 @@ export async function openRequestsModal(act) {
     const requests = await CircleUpAPI.listActivityRequests(act.id);
     list.replaceChildren();
     appList.replaceChildren();
+    rejList.replaceChildren();
 
     if (requests.length === 0) {
       const emptyPending = document.createElement("p");
@@ -178,21 +181,27 @@ export async function openRequestsModal(act) {
       emptyApproved.className = "text-muted";
       emptyApproved.textContent = "No approved participants yet.";
       appList.appendChild(emptyApproved);
+
+      const emptyRejected = document.createElement("p");
+      emptyRejected.className = "text-muted";
+      emptyRejected.textContent = "No rejected participants.";
+      rejList.appendChild(emptyRejected);
       return;
     }
 
     let hasPending = false;
     let hasApproved = false;
+    let hasRejected = false; 
 
     requests.forEach((req) => {
-      const isApproved = req.status.toLowerCase() === "approved";
+      const status = req.status.toLowerCase();
       const reqCount = req.participant_count || 1;
       const userName = req.requester_name || req.requester?.full_name || "User";
 
       const reqDiv = document.createElement("div");
       reqDiv.className = "req-item";
 
-      if (isApproved) {
+      if (status === "approved") {
         hasApproved = true;
         const userPhone = req.requester_phone || "No phone provided";
         
@@ -209,7 +218,8 @@ export async function openRequestsModal(act) {
         innerFlex.append(nameLabel, phoneLabel);
         reqDiv.appendChild(innerFlex);
         appList.appendChild(reqDiv);
-      } else if (req.status.toLowerCase() === "pending") {
+
+      } else if (status === "pending") {
         hasPending = true;
         
         const descText = document.createElement("p");
@@ -261,6 +271,25 @@ export async function openRequestsModal(act) {
         btnDiv.append(appBtn, rejBtn);
         reqDiv.append(descText, btnDiv);
         list.appendChild(reqDiv);
+
+      } else if (status === "rejected") {
+        //for rejected requests
+        hasRejected = true;
+        
+        const innerFlex = document.createElement("div");
+        innerFlex.className = "flex-between";
+
+        const nameLabel = document.createElement("strong");
+        nameLabel.textContent = `${userName} (${reqCount} requested)`;
+        nameLabel.className = "text-muted"; // Grays out the name slightly
+
+        const statusLabel = document.createElement("span");
+        statusLabel.className = "text-danger font-bold";
+        statusLabel.textContent = "Rejected";
+
+        innerFlex.append(nameLabel, statusLabel);
+        reqDiv.appendChild(innerFlex);
+        rejList.appendChild(reqDiv);
       }
     });
 
@@ -277,6 +306,14 @@ export async function openRequestsModal(act) {
       emptyApproved.textContent = "No approved participants yet.";
       appList.appendChild(emptyApproved);
     }
+
+    if (!hasRejected) {
+      const emptyRejected = document.createElement("p");
+      emptyRejected.className = "text-muted";
+      emptyRejected.textContent = "No rejected participants.";
+      rejList.appendChild(emptyRejected);
+    }
+
   } catch (e) {
     const errText = document.createElement("p");
     errText.textContent = "Error loading requests.";

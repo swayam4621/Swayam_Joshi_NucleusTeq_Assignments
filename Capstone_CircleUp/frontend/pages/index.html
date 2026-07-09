@@ -156,7 +156,7 @@
           <button class="tab-btn active" data-tab="created">Created by me</button>
           <button class="tab-btn" data-tab="joined">Joined</button>
           <button class="tab-btn" data-tab="pending">Pending requests</button>
-          <button class="tab-btn" data-tab="rejected">Rejected</button>
+          <button class="tab-btn" data-tab="rejected">Rejected from</button>
         </div>
         <p class="skeleton hidden" id="my-activities-loading">Loading your activities...</p>
 
@@ -361,12 +361,16 @@
       <button class="modal-close">&times;</button>
       <h2>Manage Requests</h2>
       <div id="requests-alert" class="alert hidden"></div>
-
+      
       <div id="requests-list" class="activity-grid mb-1-5 mt-1"></div>
 
       <hr class="divider" />
       <h3>Approved Participants</h3>
-      <div id="approved-list" class="mt-1"></div>
+      <div id="approved-list" class="mt-1 mb-1-5"></div>
+
+      <hr class="divider" />
+      <h3>Rejected Requests</h3>
+      <div id="rejected-list" class="mt-1"></div>
     </div>
 
     <!-- Activity details modal -->
