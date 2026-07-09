@@ -16,7 +16,7 @@ class ActivityBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=200)
     description: Optional[str] = Field(None, max_length=2000)
     category: str = Field(..., min_length=1, max_length=100)
-    location: str = Field(..., max_length=200)
+    location: str = Field(..., min_length=1, max_length=200)
     date: datetime
     max_participants: int = Field(..., gt=0)
 
