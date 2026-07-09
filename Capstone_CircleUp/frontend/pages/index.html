@@ -6,7 +6,9 @@
   <title>CircleUp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/modals.css" />
 </head>
 <body>
   <div class="page">
@@ -14,7 +16,6 @@
     <!-- Navbar -->
     <header class="topbar">
       <div class="topbar-container">
-        
         <a href="#" class="brand" id="nav-brand"><span class="dot"></span>CircleUp</a>
         
         <!-- logged in navigation hidden w/o login -->
@@ -34,7 +35,6 @@
             <a href="#" class="auth-link" id="btn-logout">Log Out</a>
           </div>
         </div>
-        
       </div>
     </header>
 
@@ -43,48 +43,42 @@
 
       <!-- View..Browse -->
       <section id="view-browse" class="view-section">
-
         <div class="filter-bar">
-        <div class="filter-group">
-          <select id="filter-category" class="filter-input">
-            <option value="">All Categories</option>
-          </select>
+          <div class="filter-group">
+            <select id="filter-category" class="filter-input">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select id="filter-location" class="filter-input">
+              <option value="">All Cities</option>
+              <option value="Indore">Indore</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Pune">Pune</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Ahmedabad">Ahmedabad</option>
+              <option value="Gurgaon">Gurgaon</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <input type="date" id="filter-date-from" class="filter-input" title="From Date">
+          </div>
+          <div class="filter-group">
+            <input type="date" id="filter-date-to" class="filter-input" title="To Date">
+          </div>
+          <div class="filter-group">
+            <select id="filter-sort" class="filter-input">
+              <option value="asc">Soonest First</option>
+              <option value="desc">Furthest First</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button id="btn-apply-filters" class="btn btn-small">Search</button>
+            <button id="btn-clear-filters" class="btn btn-secondary btn-small">Clear</button>
+          </div>
         </div>
-
-        <div class="filter-group">
-          <select id="filter-location" class="filter-input">
-            <option value="">All Cities</option>
-            <option value="Indore">Indore</option>
-            <option value="Bangalore">Bangalore</option>
-            <option value="Mumbai">Mumbai</option>
-            <option value="Delhi">Delhi</option>
-            <option value="Pune">Pune</option>
-            <option value="Hyderabad">Hyderabad</option>
-            <option value="Ahmedabad">Ahmedabad</option>
-            <option value="Gurgaon">Gurgaon</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <input type="date" id="filter-date-from" class="filter-input" title="From Date">
-        </div>
-
-        <div class="filter-group">
-          <input type="date" id="filter-date-to" class="filter-input" title="To Date">
-        </div>
-
-        <div class="filter-group">
-          <select id="filter-sort" class="filter-input">
-            <option value="asc">Soonest First</option>
-            <option value="desc">Furthest First</option>
-          </select>
-        </div>
-
-        <div class="filter-actions">
-          <button id="btn-apply-filters" class="btn btn-small">Search</button>
-          <button id="btn-clear-filters" class="btn btn-secondary btn-small">Clear</button>
-        </div>
-      </div>
 
         <div class="content-header">
           <h1>Find your next favorite activity</h1>
@@ -106,11 +100,14 @@
             <input type="text" id="create-title" required minlength="3" />
             <p class="field-hint" id="create-title-hint">At least 3 characters.</p>
           </div>
-          <div class="field"><label>Description <span class="text-muted">(optional)</span></label><textarea id="create-description" rows="3"></textarea></div>
+          <div class="field">
+            <label>Description <span class="text-muted">(optional)</span></label>
+            <textarea id="create-description" rows="3"></textarea>
+          </div>
           <div class="field">
             <label>Category</label>
             <select id="create-category" required></select>
-            <input type="text" id="create-category-other" class="hidden" placeholder="Enter a category" style="margin-top: 0.5rem;" />
+            <input type="text" id="create-category-other" class="hidden mt-05" placeholder="Enter a category"/>
           </div>
           <div class="field">
             <label>Location</label>
@@ -210,20 +207,26 @@
     </div>
 
     <!-- register modal -->
-    <div id="modal-register" class="modal-box hidden" style="max-height: 90vh; overflow-y: auto;">
+    <div id="modal-register" class="modal-box modal-scrollable hidden">
       <button class="modal-close">&times;</button>
       <h2>Sign Up</h2>
       <div id="register-alert" class="alert hidden"></div>
       <form id="register-form" novalidate>
-        <div class="field"><label>Name</label><input type="text" id="register-name" required minlength="3"/> 
-        <p class="field-hint" id="register-name-hint">At least 3 characters.</p>
-        </div>
+        
         <div class="field">
-          <label>Email</label>
+          <label>Name <span class="text-danger">*</span></label>
+          <input type="text" id="register-name" required minlength="3"/> 
+          <p class="field-hint" id="register-name-hint">At least 3 characters.</p>
+        </div>
+        
+        <div class="field">
+          <label>Email <span class="text-danger">*</span></label>
           <input type="email" id="register-email" required pattern='[a-zA-Z0-9_.+-]+@gmail\.com' title="Email must end with @gmail.com" />
+          <p class="field-hint">Email must end with @gmail.com.</p>
         </div>
+        
         <div class="field">
-          <label>Password</label>
+          <label>Password <span class="text-danger">*</span></label>
           <input type="password" id="register-password" required pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}" title="Must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one special character."/>
           <ul class="requirement-list" id="password-requirements">
             <li data-rule="length">At least 8 characters</li>
@@ -232,9 +235,15 @@
             <li data-rule="special">One special character</li>
           </ul>
         </div>
-        <div class="field"><label>Phone Number</label><input type="tel" id="register-phone" required pattern="\d{10}" maxlength="10" title="Phone number must be exactly 10 digits" /></div>
+        
         <div class="field">
-          <label>City</label>
+          <label>Phone Number <span class="text-danger">*</span></label>
+          <input type="tel" id="register-phone" required pattern="\d{10}" maxlength="10" title="Phone number must be exactly 10 digits" />
+          <p class="field-hint">Phone number must be exactly 10 digits.</p>
+        </div>
+        
+        <div class="field">
+          <label>City <span class="text-danger">*</span></label>
           <select id="register-city" required>
             <option value="" disabled selected>Select a city</option>
             <option value="Mumbai">Mumbai</option>
@@ -247,7 +256,12 @@
             <option value="Gurgaon">Gurgaon</option>
           </select>
         </div>
-        <div class="field"><label>Bio</label><textarea id="register-bio" rows="2"></textarea></div>
+        
+        <div class="field">
+          <label>Bio <span class="text-muted">(optional)</span></label>
+          <textarea id="register-bio" rows="2"></textarea>
+        </div>
+        
         <button type="submit" class="btn" id="btn-submit-register">Sign Up</button>
       </form>
       <p class="text-muted text-center mt-1">Already have an account? <a href="#" id="link-to-login">Log In</a></p>
@@ -269,7 +283,7 @@
         <div class="field">
           <label>Category</label>
           <select id="edit-category" required></select>
-          <input type="text" id="edit-category-other" class="hidden" placeholder="Enter a category" style="margin-top: 0.5rem;" />
+          <input type="text" id="edit-category-other" class="hidden mt-05" placeholder="Enter a category"/>
         </div>
         <div class="field">
           <label>Location</label>
@@ -301,43 +315,42 @@
       <h2>Manage Requests</h2>
       <div id="requests-alert" class="alert hidden"></div>
       
-      <div id="requests-list" class="activity-grid mt-1" style="margin-bottom: 1.5rem;"></div>
+      <div id="requests-list" class="activity-grid mb-1-5 mt-1"></div>
 
-      <hr style="border: none; border-top: 1px solid var(--color-line); margin-bottom: 1rem;" />
+      <hr class="divider" />
       <h3>Approved Participants</h3>
-      <div id="approved-list" style="margin-top: 1rem;"></div>
+      <div id="approved-list" class="mt-1"></div>
     </div>
 
     <!-- Activity details modal -->
     <div id="modal-activity-details" class="modal-box hidden">
       <button class="modal-close">&times;</button>
-      <h2 id="detail-title" style="margin-bottom: 0.5rem;"></h2>
+      <h2 id="detail-title" class="mb-05"></h2>
       <span id="detail-badge"></span>
       
       <div class="event-meta mt-1" id="detail-meta"></div>
-      <p id="detail-desc" class="mt-1" style="color: var(--color-ink); padding: 1rem 0; border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line);"></p>
+      <p id="detail-desc" class="detail-desc-box mt-1"></p>
       
       <div id="activity-contact-info" class="alert alert-success hidden mt-1">
         <strong>Organizer Contact:</strong> <span id="detail-contact-phone"></span>
       </div>
 
       <div id="detail-join-section" class="mt-1 hidden">
-        <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Participants to Request:</label>
-        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-          <button id="counter-minus" class="btn btn-secondary btn-small" style="width:40px;">-</button>
-          <span id="counter-value" style="font-weight: 600; font-size: 1.2rem;">1</span>
-          <button id="counter-plus" class="btn btn-secondary btn-small" style="width:40px;">+</button>
+        <label class="form-label">Participants to Request:</label>
+        <div class="counter-group">
+          <button id="counter-minus" class="btn btn-secondary btn-small btn-square">-</button>
+          <span id="counter-value" class="counter-display">1</span>
+          <button id="counter-plus" class="btn btn-secondary btn-small btn-square">+</button>
         </div>
         <button id="btn-submit-join" class="btn">Send Request</button>
         <div id="join-alert" class="alert hidden mt-1"></div>
       </div>
       
-      <div id="detail-status-message" class="mt-1 text-center font-weight-600 hidden"></div>
+      <div id="detail-status-message" class="mt-1 text-center font-bold hidden"></div>
     </div>
 
   </div>
 
-  <script src="../js/api.js"></script>
-  <script src="../js/app.js"></script>
+  <script type="module" src="../js/app.js"></script>
 </body>
 </html>
