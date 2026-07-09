@@ -4,10 +4,10 @@ import re
 
 class RegisterRequest(BaseModel):
     name: str = Field(..., max_length=120)
-    email: str = Field(..., pattern=r"^[a-zA-Z0-9_.+-]+@gmail\.com$")
+    email: str
     password: str = Field(..., min_length=8)
-    phone_number: str = Field(..., pattern=r"^\d{10}$", description="Phone number must be exactly 10 digits.")
-    city: str = Field(..., pattern="^(Mumbai|Pune|Bangalore|Delhi|Indore|Ahmedabad|Hyderabad|Gurgaon)$")
+    phone_number: str
+    city: str
     bio: Optional[str] = None
 
     @field_validator('name')
@@ -16,6 +16,28 @@ class RegisterRequest(BaseModel):
         if len(v.strip()) < 3:
             raise ValueError('Name must be at least 3 characters long.')
         return v.strip()
+
+    @field_validator('email')
+    @classmethod
+    def validate_email_domain(cls, v: str) -> str:
+        if not re.match(r"^[a-zA-Z0-9_.+-]+@gmail\.com$", v):
+            raise ValueError('Email must be a valid @gmail.com address.')
+        return v
+
+    @field_validator('phone_number')
+    @classmethod
+    def validate_phone_number(cls, v: str) -> str:
+        if not re.match(r"^\d{10}$", v):
+            raise ValueError('Phone number must be exactly 10 digits.')
+        return v
+
+    @field_validator('city')
+    @classmethod
+    def validate_city(cls, v: str) -> str:
+        allowed_cities = {"Mumbai", "Pune", "Bangalore", "Delhi", "Indore", "Ahmedabad", "Hyderabad", "Gurgaon"}
+        if v not in allowed_cities:
+            raise ValueError('Please select a valid city.')
+        return v
 
     @field_validator('password')
     @classmethod

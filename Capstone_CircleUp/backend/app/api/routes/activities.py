@@ -44,6 +44,18 @@ from app.services.participation_service import (
 router = APIRouter(prefix="/activities", tags=["activities"])
 
 
+def _request_to_dict(request) -> dict:
+    return {
+        "id": request.id,
+        "requester_id": request.requester.id,
+        "requester_name": request.requester.name,
+        "requester_phone": request.requester.phone_number,
+        "status": request.status,
+        "participant_count": request.participant_count,
+        "created_at": request.created_at,
+    }
+
+
 def _activity_to_dict(activity: Activity, current_user: User | None, db: Session) -> dict:
     is_owner = current_user is not None and current_user.id == activity.creator_id
     user_status = None
@@ -170,15 +182,7 @@ def request_participation(
 ):
     try:
         request = create_participation_request(db, activity_id, current_user, payload.participant_count)
-        return {
-            "id": request.id,
-            "requester_id": request.requester.id,
-            "requester_name": request.requester.name,
-            "requester_phone": request.requester.phone_number,
-            "status": request.status,
-            "participant_count": request.participant_count,
-            "created_at": request.created_at,
-        }
+        return _request_to_dict(request)
     except ActivityNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
     except ParticipationNotAllowedError as exc:
@@ -211,15 +215,7 @@ def approve_participation_request_route(
 ):
     try:
         request = approve_participation_request(db, request_id, current_user)
-        return {
-            "id": request.id,
-            "requester_id": request.requester.id,
-            "requester_name": request.requester.name,
-            "requester_phone": request.requester.phone_number,
-            "status": request.status,
-            "participant_count": request.participant_count,
-            "created_at": request.created_at,
-        }
+        return _request_to_dict(request)
     except ParticipationRequestNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
     except NotParticipationOwnerError as exc:
@@ -238,15 +234,7 @@ def reject_participation_request_route(
 ):
     try:
         request = reject_participation_request(db, request_id, current_user)
-        return {
-            "id": request.id,
-            "requester_id": request.requester.id,
-            "requester_name": request.requester.name,
-            "requester_phone": request.requester.phone_number,
-            "status": request.status,
-            "participant_count": request.participant_count,
-            "created_at": request.created_at,
-        }
+        return _request_to_dict(request)
     except ParticipationRequestNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
     except NotParticipationOwnerError as exc:
