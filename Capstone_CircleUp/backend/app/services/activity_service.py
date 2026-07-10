@@ -18,6 +18,10 @@ class ActivityAlreadyCancelledError(Exception): pass
 
 
 def _apply_lazy_status(activity: Activity) -> Activity:
+    """
+    once date/time has passed, status auto-transitions to
+    Computed that applies to open full  Cancelled stays
+    """
     if activity.status in (ActivityStatus.OPEN, ActivityStatus.FULL):
         activity_date = activity.date
         if activity_date.tzinfo is None:

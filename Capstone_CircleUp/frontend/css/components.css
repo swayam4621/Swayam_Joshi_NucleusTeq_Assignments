@@ -49,6 +49,8 @@
 .btn-small { padding: 0.4rem 0.8rem; width: auto; font-size: 0.85rem;}
 .btn-group-sm { display: flex; gap: 0.5rem; }
 .btn-square { width: 40px; text-align: center; padding: 0; }
+.btn-danger { background: var(--color-danger); border-color: var(--color-danger); color: white; }
+.btn-danger:hover { background: #A32E2E; }
 
 /* --- Form validation helpers --- */
 .field-hint { font-size: 0.8rem; color: var(--color-ink-soft); margin-top: 0.35rem; }
