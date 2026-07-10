@@ -2,38 +2,23 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import logging
 
-from sqlalchemy import func, select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.activity import Activity, ActivityStatus
 from app.models.activity_participation import ParticipationRequest, ParticipationStatus
 from app.models.user import User
 from app.services.activity_service import ActivityNotFoundError
+from app.repositories import activity_repository, participation_repository
 
 logger = logging.getLogger("circleup")
 
-
-class ParticipationError(Exception):
-    pass
-
-class ParticipationNotAllowedError(ParticipationError):
-    pass
-
-class ActivityNotAcceptingRequestsError(ParticipationError):
-    pass
-
-class ParticipationRequestNotFoundError(ParticipationError):
-    pass
-
-class ParticipationRequestStatusError(ParticipationError):
-    pass
-
-class NotParticipationOwnerError(ParticipationError):
-    pass
-
-class DuplicateParticipationRequestError(ParticipationError):
-    pass
+class ParticipationError(Exception): pass
+class ParticipationNotAllowedError(ParticipationError): pass
+class ActivityNotAcceptingRequestsError(ParticipationError): pass
+class ParticipationRequestNotFoundError(ParticipationError): pass
+class ParticipationRequestStatusError(ParticipationError): pass
+class NotParticipationOwnerError(ParticipationError): pass
+class DuplicateParticipationRequestError(ParticipationError): pass
 
 
 def _normalize_status(activity: Activity) -> ActivityStatus:
@@ -59,20 +44,11 @@ def _assert_activity_active(activity: Activity, requester: User | None = None) -
 
 
 def count_activity_requests(db: Session, activity_id: int, status: ParticipationStatus) -> int:
-    result = db.execute(
-        select(func.sum(ParticipationRequest.participant_count)).where(
-            ParticipationRequest.activity_id == activity_id,
-            ParticipationRequest.status == status,
-        )
-    ).scalar_one_or_none()
-    return result or 0
+    return participation_repository.count_by_status(db, activity_id, status)
 
 
 def get_user_participation_status(db: Session, activity_id: int, user: User) -> ParticipationStatus | None:
-    requests = db.query(ParticipationRequest).filter(
-        ParticipationRequest.activity_id == activity_id,
-        ParticipationRequest.requester_id == user.id,
-    ).all()
+    requests = participation_repository.get_by_user_and_activity(db, user.id, activity_id)
     
     if not requests:
         return None        
@@ -89,17 +65,14 @@ def get_user_participation_status(db: Session, activity_id: int, user: User) -> 
 
 
 def create_participation_request(db: Session, activity_id: int, requester: User, participant_count: int) -> ParticipationRequest:
-    activity = db.query(Activity).filter(Activity.id == activity_id).first()
+    activity = activity_repository.get_by_id(db, activity_id)
     if activity is None:
         raise ActivityNotFoundError(f"Activity {activity_id} not found.")
 
     _assert_activity_active(activity, requester=requester)
 
-    existing = db.query(ParticipationRequest).filter(
-        ParticipationRequest.activity_id == activity_id,
-        ParticipationRequest.requester_id == requester.id,
-    ).first()
-    if existing is not None:
+    existing_requests = participation_repository.get_by_user_and_activity(db, requester.id, activity_id)
+    if existing_requests:
         raise DuplicateParticipationRequestError("You've already requested to join this activity.")
 
     request = ParticipationRequest(
@@ -107,34 +80,24 @@ def create_participation_request(db: Session, activity_id: int, requester: User,
         requester_id=requester.id,
         participant_count=participant_count
     )
-    db.add(request)
-    try:
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise DuplicateParticipationRequestError("You've already requested to join this activity.")
-    db.refresh(request)
-    return request
+    return participation_repository.create(db, request)
 
 
 def _lock_activity(db: Session, activity_id: int) -> Activity:
-    activity = db.query(Activity).filter(Activity.id == activity_id).with_for_update().first()
+    activity = activity_repository.get_by_id(db, activity_id, lock=True)
     if activity is None:
         raise ActivityNotFoundError(f"Activity {activity_id} not found.")
     return activity
 
 
 def approve_participation_request(db: Session, request_id: int, owner: User) -> ParticipationRequest:
-    request = db.query(ParticipationRequest).filter(ParticipationRequest.id == request_id).first()
+    request = participation_repository.get_by_id(db, request_id)
     if request is None:
         raise ParticipationRequestNotFoundError(f"Participation request {request_id} not found.")
 
     activity = _lock_activity(db, request.activity_id)
     if activity.creator_id != owner.id:
-        logger.warning(
-            "User %s attempted to approve request %s on activity %s they do not own.",
-            owner.id, request_id, activity.id,
-        )
+        logger.warning("User %s attempted to approve request %s on activity %s they do not own.", owner.id, request_id, activity.id)
         raise NotParticipationOwnerError("Only the activity creator can approve requests.")
 
     current_status = _normalize_status(activity)
@@ -153,48 +116,34 @@ def approve_participation_request(db: Session, request_id: int, owner: User) -> 
     
     if approved_count + request.participant_count >= activity.max_participants:
         activity.status = ActivityStatus.FULL
+        activity_repository.save(db, activity) # Persist the status change
 
-    db.commit()
-    db.refresh(request)
-    logger.info(
-        "Request %s (requester %s) approved for activity %s by owner %s.",
-        request.id, request.requester_id, activity.id, owner.id,
-    )
-    return request
+    logger.info("Request %s (requester %s) approved for activity %s by owner %s.", request.id, request.requester_id, activity.id, owner.id)
+    return participation_repository.save(db, request)
 
 
 def reject_participation_request(db: Session, request_id: int, owner: User) -> ParticipationRequest:
-    request = db.query(ParticipationRequest).filter(ParticipationRequest.id == request_id).first()
+    request = participation_repository.get_by_id(db, request_id)
     if request is None:
         raise ParticipationRequestNotFoundError(f"Participation request {request_id} not found.")
 
-    activity = db.query(Activity).filter(Activity.id == request.activity_id).first()
+    activity = activity_repository.get_by_id(db, request.activity_id)
     if activity is None:
         raise ActivityNotFoundError(f"Activity {request.activity_id} not found.")
     if activity.creator_id != owner.id:
-        logger.warning(
-            "User %s attempted to reject request %s on activity %s they do not own.",
-            owner.id, request_id, activity.id,
-        )
+        logger.warning("User %s attempted to reject request %s on activity %s they do not own.", owner.id, request_id, activity.id)
         raise NotParticipationOwnerError("Only the activity creator can reject requests.")
 
     if request.status != ParticipationStatus.PENDING:
         raise ParticipationRequestStatusError("Only pending requests can be rejected.")
 
     request.status = ParticipationStatus.REJECTED
-    db.commit()
-    db.refresh(request)
-    logger.info(
-        "Request %s (requester %s) rejected for activity %s by owner %s.",
-        request.id, request.requester_id, activity.id, owner.id,
-    )
-    return request
+    logger.info("Request %s (requester %s) rejected for activity %s by owner %s.", request.id, request.requester_id, activity.id, owner.id)
+    return participation_repository.save(db, request)
 
 
 def get_activity_requests(db: Session, activity_id: int) -> list[dict]:
-    requests = db.query(ParticipationRequest).filter(
-        ParticipationRequest.activity_id == activity_id,
-    ).order_by(ParticipationRequest.created_at.asc()).all()
+    requests = participation_repository.list_by_activity(db, activity_id)
 
     results: list[dict] = []
     for request in requests:

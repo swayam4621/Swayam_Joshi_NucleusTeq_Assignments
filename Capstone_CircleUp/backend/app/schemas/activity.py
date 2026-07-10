@@ -31,7 +31,7 @@ class ActivityUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=3, max_length=200)
     description: Optional[str] = Field(None, max_length=2000)
     category: Optional[str] = Field(None, min_length=1, max_length=100)
-    location: Optional[str] = Field(None, max_length=200)
+    location: Optional[str] = Field(None, min_length=1, max_length=200)
     date: Optional[datetime] = None
     max_participants: Optional[int] = Field(None, gt=0)
 
