@@ -10,7 +10,6 @@ from app.models.activity import Activity, ActivityStatus
 from app.models.user import User
 from app.schemas.activity import ActivityCreate, ActivityUpdate
 from app.repositories import activity_repository
-from app.services.participation_service import get_user_participation_status, ParticipationStatus
 
 class ActivityNotFoundError(Exception): pass
 class NotActivityOwnerError(Exception): pass
@@ -57,6 +56,7 @@ def get_activity(db: Session, activity_id: int, current_user: User | None = None
         if activity.creator_id == current_user.id:
             activity.contact_phone = activity.creator.phone_number
         else:
+            from app.services.participation_service import get_user_participation_status, ParticipationStatus
             status = get_user_participation_status(db, activity.id, current_user)
             if status == ParticipationStatus.APPROVED:
                 activity.contact_phone = activity.creator.phone_number
@@ -120,6 +120,7 @@ def list_activities(
             if activity.creator_id == current_user.id:
                 activity.contact_phone = activity.creator.phone_number
             else:
+                from app.services.participation_service import get_user_participation_status, ParticipationStatus
                 status = get_user_participation_status(db, activity.id, current_user)
                 if status == ParticipationStatus.APPROVED:
                     activity.contact_phone = activity.creator.phone_number
