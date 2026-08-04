@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CircleUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/modals.css" />
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- Navbar -->
+    <header class="topbar">
+      <div class="topbar-container">
+        <a href="#" class="brand" id="nav-brand"><span class="dot"></span>CircleUp</a>
+
+        <!-- logged in navigation hidden w/o login -->
+        <nav class="nav-links hidden" id="nav-logged-in">
+          <button class="nav-btn active" data-target="view-browse">Browse</button>
+          <button class="nav-btn" data-target="view-create">Create</button>
+          <button class="nav-btn" data-target="view-my-activities">My Activities</button>
+          <button class="nav-btn" data-target="view-profile">Profile</button>
+        </nav>
+
+        <!-- actions -->
+        <div class="topbar-actions">
+          <div id="auth-actions-logged-out">
+            <a href="#" class="auth-link" id="btn-show-login">Log In</a>
+          </div>
+          <div id="auth-actions-logged-in" class="hidden">
+            <a href="#" class="auth-link" id="btn-logout">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content-wrapper">
+      <div id="global-alert" class="alert hidden" role="alert"></div>
+
+      <!-- View..Browse -->
+      <section id="view-browse" class="view-section">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <select id="filter-category" class="filter-input">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select id="filter-location" class="filter-input">
+              <option value="">All Cities</option>
+              <option value="Indore">Indore</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Pune">Pune</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Ahmedabad">Ahmedabad</option>
+              <option value="Gurgaon">Gurgaon</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <input type="date" id="filter-date-from" class="filter-input" title="From Date">
+          </div>
+          <div class="filter-group">
+            <input type="date" id="filter-date-to" class="filter-input" title="To Date">
+          </div>
+          <div class="filter-group">
+            <select id="filter-sort" class="filter-input">
+              <option value="asc">Soonest First</option>
+              <option value="desc">Furthest First</option>
+            </select>
+          </div>
+          <div class="filter-actions">
+            <button id="btn-apply-filters" class="btn btn-small">Search</button>
+            <button id="btn-clear-filters" class="btn btn-secondary btn-small">Clear</button>
+          </div>
+        </div>
+
+        <div class="content-header">
+          <h1>Find your next favorite activity</h1>
+          <p class="subtitle">Join thousands of people discovering local sports, meetups, and hobbies.</p>
+        </div>
+        <p class="skeleton hidden" id="browse-loading">Loading activities...</p>
+        <div id="grid-browse" class="activity-grid"></div>
+      </section>
+
+      <!-- View..create activity -->
+      <section id="view-create" class="view-section hidden">
+        <div class="content-header">
+          <h1>Create an activity</h1>
+          <p class="subtitle">Set the details, and people nearby can ask to join.</p>
+        </div>
+        <form id="create-form" class="standard-form" novalidate>
+          
+          <div class="field">
+            <label>Title <span class="text-danger">*</span></label>
+            <input type="text" id="create-title" required minlength="3" />
+            <p class="field-hint" id="create-title-hint">At least 3 characters.</p>
+          </div>
+          
+          <div class="field">
+            <label>Description <span class="text-muted">(optional)</span></label>
+            <textarea id="create-description" rows="3"></textarea>
+          </div>
+          
+          <div class="field">
+            <label>Category <span class="text-danger">*</span></label>
+            <select id="create-category" required></select>
+            <input type="text" id="create-category-other" class="hidden mt-05" placeholder="Enter a category"/>
+          </div>
+          
+          <div class="field">
+            <label>Location <span class="text-danger">*</span></label>
+            <select id="create-location" required>
+              <option value="" disabled selected>Select a city</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Pune">Pune</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Indore">Indore</option>
+              <option value="Ahmedabad">Ahmedabad</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Gurgaon">Gurgaon</option>
+            </select>
+          </div>
+          
+          <div class="field">
+            <label>Date & time <span class="text-danger">*</span></label>
+            <input type="datetime-local" id="create-date" required />
+          </div>
+          
+          <div class="field">
+            <label>Max participants <span class="text-danger">*</span></label>
+            <input type="number" id="create-max" required min="1" /> 
+            <p class="field-hint" id="create-max-hint">Must be at least 1.</p>
+          </div>
+          
+          <button type="submit" class="btn" id="btn-submit-create">Create Activity</button>
+        </form>
+      </section>
+
+      <!-- View..My Activities -->
+      <section id="view-my-activities" class="view-section hidden">
+        <div class="content-header">
+          <h1>My Activities</h1>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="created">Created by me</button>
+          <button class="tab-btn" data-tab="joined">Joined</button>
+          <button class="tab-btn" data-tab="pending">Pending requests</button>
+          <button class="tab-btn" data-tab="rejected">Rejected from</button>
+        </div>
+        <p class="skeleton hidden" id="my-activities-loading">Loading your activities...</p>
+
+        <div id="tab-created" class="tab-panel">
+          <div id="grid-created" class="activity-grid"></div>
+        </div>
+        <div id="tab-joined" class="tab-panel hidden">
+          <div id="grid-joined" class="activity-grid"></div>
+        </div>
+        <div id="tab-pending" class="tab-panel hidden">
+          <div id="grid-pending" class="activity-grid"></div>
+        </div>
+        <div id="tab-rejected" class="tab-panel hidden">
+          <div id="grid-rejected" class="activity-grid"></div>
+        </div>
+      </section>
+
+      <!-- View..profile -->
+      <section id="view-profile" class="view-section hidden">
+        <div class="content-header">
+          <h1>Your Profile</h1>
+        </div>
+        <form id="profile-form" class="standard-form" novalidate>
+          
+          <div class="field">
+            <label>Name <span class="text-danger">*</span></label>
+            <input type="text" id="profile-name" required minlength="3" />
+            <p class="field-hint" id="profile-name-hint">At least 3 characters.</p>
+          </div>
+          
+          <div class="field">
+            <label>Phone Number <span class="text-danger">*</span></label>
+            <input type="tel" id="profile-phone" required pattern="\d{10}" maxlength="10" title="Phone number must be exactly 10 digits"/>
+            <p class="field-hint" id="profile-phone-hint">Must be exactly 10 digits.</p>
+          </div>
+          
+          <div class="field">
+            <label>City <span class="text-danger">*</span></label>
+            <select id="profile-city" required>
+              <option value="" disabled selected>Select your city</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Pune">Pune</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Indore">Indore</option>
+              <option value="Ahmedabad">Ahmedabad</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Gurgaon">Gurgaon</option>
+            </select>
+          </div>
+          
+          <div class="field">
+            <label>Bio <span class="text-muted">(optional)</span></label>
+            <textarea id="profile-bio" rows="3"></textarea>
+          </div>
+          
+          <button type="submit" class="btn" id="btn-submit-profile">Save Changes</button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modals overlay -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+
+    <!-- Login modal -->
+    <div id="modal-login" class="modal-box hidden">
+      <button class="modal-close">&times;</button>
+      <h2>Log In</h2>
+      <div id="login-alert" class="alert hidden"></div>
+      <form id="login-form" novalidate>
+        <div class="field"><label>Email</label><input type="email" id="login-email" required /></div>
+        <div class="field"><label>Password</label><input type="password" id="login-password" required /></div>
+        <button type="submit" class="btn" id="btn-submit-login">Log In</button>
+      </form>
+      <p class="text-muted text-center mt-1">New to CircleUp? <a href="#" id="link-to-register">Create an account</a>
+      </p>
+    </div>
+
+    <!-- register modal -->
+    <div id="modal-register" class="modal-box modal-scrollable hidden">
+      <button class="modal-close">&times;</button>
+      <h2>Sign Up</h2>
+      <div id="register-alert" class="alert hidden"></div>
+      <form id="register-form" novalidate>
+
+        <div class="field">
+          <label>Name <span class="text-danger">*</span></label>
+          <input type="text" id="register-name" required minlength="3" />
+          <p class="field-hint" id="register-name-hint">At least 3 characters.</p>
+        </div>
+
+        <div class="field">
+          <label>Email <span class="text-danger">*</span></label>
+          <input type="email" id="register-email" required pattern='[a-zA-Z0-9_.+-]+@gmail\.com'
+            title="Email must end with @gmail.com" />
+          <p class="field-hint">Email must end with @gmail.com.</p>
+        </div>
+
+        <div class="field">
+          <label>Password <span class="text-danger">*</span></label>
+          <input type="password" id="register-password" required pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}"
+            title="Must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one special character." />
+          <ul class="requirement-list" id="password-requirements">
+            <li data-rule="length">At least 8 characters</li>
+            <li data-rule="upper">One uppercase letter</li>
+            <li data-rule="lower">One lowercase letter</li>
+            <li data-rule="special">One special character</li>
+          </ul>
+        </div>
+
+        <div class="field">
+          <label>Phone Number <span class="text-danger">*</span></label>
+          <input type="tel" id="register-phone" required pattern="\d{10}" maxlength="10"
+            title="Phone number must be exactly 10 digits" />
+          <p class="field-hint">Phone number must be exactly 10 digits.</p>
+        </div>
+
+        <div class="field">
+          <label>City <span class="text-danger">*</span></label>
+          <select id="register-city" required>
+            <option value="" disabled selected>Select a city</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Pune">Pune</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Indore">Indore</option>
+            <option value="Ahmedabad">Ahmedabad</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Gurgaon">Gurgaon</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Bio <span class="text-muted">(optional)</span></label>
+          <textarea id="register-bio" rows="2"></textarea>
+        </div>
+
+        <button type="submit" class="btn" id="btn-submit-register">Sign Up</button>
+      </form>
+      <p class="text-muted text-center mt-1">Already have an account? <a href="#" id="link-to-login">Log In</a></p>
+    </div>
+
+    <!-- edit activity modal -->
+    <div id="modal-edit" class="modal-box modal-scrollable hidden">
+      <button class="modal-close">&times;</button>
+      <h2>Update Activity</h2>
+      <div id="edit-alert" class="alert hidden"></div>
+      <form id="edit-form" >
+        <input type="hidden" id="edit-id" />
+        
+        <div class="field">
+          <label>Title <span class="text-danger">*</span></label>
+          <input type="text" id="edit-title" required minlength="3" />
+          <p class="field-hint" id="edit-title-hint">At least 3 characters.</p>
+        </div>
+        
+        <div class="field">
+          <label>Description <span class="text-muted">(optional)</span></label>
+          <textarea id="edit-description" rows="3"></textarea>
+        </div>
+        
+        <div class="field">
+          <label>Category <span class="text-danger">*</span></label>
+          <select id="edit-category" required></select>
+          <input type="text" id="edit-category-other" class="hidden mt-05" placeholder="Enter a category"/>
+        </div>
+        
+        <div class="field">
+          <label>Location <span class="text-danger">*</span></label>
+          <select id="edit-location" required>
+            <option value="" disabled selected>Select a city</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Pune">Pune</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Indore">Indore</option>
+            <option value="Ahmedabad">Ahmedabad</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Gurgaon">Gurgaon</option>
+          </select>
+        </div>
+        
+        <div class="field">
+          <label>Date & time <span class="text-danger">*</span></label>
+          <input type="datetime-local" id="edit-date" required />
+        </div>
+        
+        <div class="field">
+          <label>Max participants <span class="text-danger">*</span></label>
+          <input type="number" id="edit-max" required min="1" />
+          <p class="field-hint" id="edit-max-hint">Must be at least 1.</p>
+        </div>
+        
+        <button type="submit" class="btn" id="btn-submit-edit">Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Manage requests modal -->
+    <div id="modal-requests" class="modal-box hidden">
+      <button class="modal-close">&times;</button>
+      <h2>Manage Requests</h2>
+      <div id="requests-alert" class="alert hidden"></div>
+      
+      <div id="requests-list" class="activity-grid mb-1-5 mt-1"></div>
+
+      <hr class="divider" />
+      <h3>Approved Participants</h3>
+      <div id="approved-list" class="mt-1 mb-1-5"></div>
+
+      <hr class="divider" />
+      <h3>Rejected Requests</h3>
+      <div id="rejected-list" class="mt-1"></div>
+    </div>
+
+    <!-- Activity details modal -->
+    <div id="modal-activity-details" class="modal-box hidden">
+      <button class="modal-close">&times;</button>
+      <h2 id="detail-title" class="mb-05"></h2>
+      <span id="detail-badge"></span>
+
+      <div class="event-meta mt-1" id="detail-meta"></div>
+      <p id="detail-desc" class="detail-desc-box mt-1"></p>
+
+      <div id="activity-contact-info" class="alert alert-success hidden mt-1">
+        <strong>Organizer Contact:</strong> <span id="detail-contact-phone"></span>
+      </div>
+
+      <div id="detail-join-section" class="mt-1 hidden">
+        <label class="form-label">Participants to Request:</label>
+        <div class="counter-group">
+          <button id="counter-minus" class="btn btn-secondary btn-small btn-square">-</button>
+          <span id="counter-value" class="counter-display">1</span>
+          <button id="counter-plus" class="btn btn-secondary btn-small btn-square">+</button>
+        </div>
+        <button id="btn-submit-join" class="btn">Send Request</button>
+        <div id="join-alert" class="alert hidden mt-1"></div>
+      </div>
+
+      <div id="detail-status-message" class="mt-1 text-center font-bold hidden"></div>
+    </div>
+
+  </div>
+
+  <script type="module" src="../js/app.js"></script>
+</body>
+
+</html>

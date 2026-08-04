@@ -12,16 +12,14 @@ class ParticipationStatus(str, enum.Enum):
 
 class ParticipationRequest(Base):
     __tablename__ = "participation_requests"
-    id = Column(Integer, primary_key=True, index=True)
-    activity_id = Column(Integer, ForeignKey("activities.id"), nullable=False, index=True)
-    requester_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
-    
-    participant_count = Column(Integer, nullable=False, default=1)
+    __table_args__ = (
+        UniqueConstraint("activity_id", "requester_id", name="uq_activity_requester"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     activity_id = Column(Integer, ForeignKey("activities.id"), nullable=False, index=True)
     requester_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
-    
+
     participant_count = Column(Integer, nullable=False, default=1)
 
     status = Column(

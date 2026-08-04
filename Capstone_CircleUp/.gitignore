@@ -4,10 +4,11 @@ __pycache__/
 
 venv/
 .venv/
-env/
-
+.env/
 .env
 .env.local
+backend/.env
+**/.env
 
 *.egg-info/
 build/
