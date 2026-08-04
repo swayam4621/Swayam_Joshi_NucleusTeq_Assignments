@@ -10,7 +10,8 @@ from app.services.auth_service import (
     authenticate_user,
     create_token_for_user,
     EmailAlreadyRegisteredError,
-    InvalidCredentialsError,
+    UserNotFoundError,
+    IncorrectPasswordError,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -29,7 +30,9 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)):
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     try:
         user = authenticate_user(db, payload.email, payload.password)
-    except InvalidCredentialsError as exc:
+    except UserNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc))
+    except IncorrectPasswordError as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(exc))
     token = create_token_for_user(user)
     return TokenResponse(access_token=token)

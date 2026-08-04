@@ -1,0 +1,91 @@
+:root {
+  --color-bg: #FAF6F0;
+  --color-surface: #FFFFFF;
+  --color-ink: #1F1B16;
+  --color-ink-soft: #6B6259;
+  --color-accent: #E8602C;
+  --color-accent-dark: #C24A1E;
+  --color-line: #E8E1D6;
+  --color-success: #3F7D4F;
+  --color-danger: #C23B3B;
+  --color-pending: #B8862E;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --max-width: 900px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- text --- */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.2; margin: 0; }
+h1 { font-size: 2.5rem; text-align: center; margin-bottom: 0.5rem; }
+h2 { font-size: 1.75rem; margin-bottom: 1rem;}
+h3 { font-size: 1.25rem; }
+p { margin: 0; color: var(--color-ink-soft); }
+a { color: var(--color-accent-dark); text-decoration: none; cursor: pointer; }
+a:hover { text-decoration: underline; }
+
+/* --- Layout --- */
+.page { 
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  width: 100%;
+}
+.content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+.content-header { text-align: center; margin-bottom: 2rem; width: 100%; }
+.subtitle { text-align: center; font-size: 1.1rem; margin-bottom: 1.5rem; }
+.view-section { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+/* --- utility classes --- */
+.hidden { display: none !important; }
+.text-success { color: var(--color-success); font-weight: 600;}
+.text-danger { color: var(--color-danger, #d32f2f); font-weight: 600;}
+.text-muted { color: var(--color-ink-soft); font-size: 0.85rem; margin-top: 0.5rem; }
+.text-center { text-align: center; }
+.font-bold { font-weight: 600; }
+.required-mark { color: var(--color-danger); font-weight: 600; }
+
+.mt-05 { margin-top: 0.5rem; }
+.mt-1 { margin-top: 1rem; }
+.mb-05 { margin-bottom: 0.5rem; }
+.mb-1-5 { margin-bottom: 1.5rem; }
+
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.divider { border: none; border-top: 1px solid var(--color-line); margin-bottom: 1rem; }
+.link-accent { color: var(--color-accent-dark); text-decoration: underline; font-weight: 600; }
+
+@media (max-width: 480px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  .content-wrapper { padding: 2rem 1rem; }
+}
