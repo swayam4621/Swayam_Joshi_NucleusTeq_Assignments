@@ -4,11 +4,11 @@ __pycache__/
 
 venv/
 .venv/
-env/
-
+.env/
 .env
 .env.local
-Capstone_CircleUp/backend/.env
+backend/.env
+**/.env
 
 *.egg-info/
 build/

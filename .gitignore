@@ -1,4 +1,5 @@
 **/.vscode/
 Capstone_CircleUp/backend/app/__pycache__/__init__.cpython-313.pyc
 **/__pycache__/**/*
-Capstone_CircleUp/backend/.env
+**/.env/**/*
+**/__pycache__/**/*
